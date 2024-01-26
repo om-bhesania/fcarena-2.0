@@ -1,7 +1,10 @@
- 
+import BookingForm from "../components/BookingPage Components/BookingForm"
+
 const Bookings = () => {
   return (
-    <div>Booking</div>
+    <>
+      <BookingForm/>
+    </>
   )
 }
 
