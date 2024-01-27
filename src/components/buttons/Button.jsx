@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 
-const Button = ({ customClass, variant, label, icon, imgCustom, role, url,target,onClick }) => {
+const Button = ({ customClass, variant, label, icon, imgCustom, role, url,target,onClick ,type }) => {
     const baseStyle = "p-3 ease-in-out duration-300 font-medium active:scale-[0.9]"
     const style = {
         primary: 'bg-primary border border-primary text-bodyTextLight rounded hover:bg-secondary hover:text-primary hover:border-secondary',
@@ -16,6 +16,7 @@ const Button = ({ customClass, variant, label, icon, imgCustom, role, url,target
                     to={url}
                     className={`${style[variant]} ${customClass} ${baseStyle} `} 
                     onClick={onClick}
+                    type={type}
                 >
                     {label} {icon ? <Button.Icon img={icon} customImgClass={imgCustom}></Button.Icon> : ""}
                 </Link>
@@ -24,6 +25,7 @@ const Button = ({ customClass, variant, label, icon, imgCustom, role, url,target
                 <button
                     className={`${style[variant]} ${customClass} ${baseStyle} `}
                     onClick={onClick}
+                    type={type}
                 >
                     {label} {icon ? <Button.Icon img={icon} customImgClass={imgCustom}></Button.Icon> : ""}
                 </button>

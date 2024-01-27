@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import Logo from './../Utils/Logo'; 
-import { MenuItems } from '../Utils/Data';
+import { FooterMenuItems } from '../Utils/Data';
 
 const Footer = () => {
     return (
@@ -17,7 +17,7 @@ const Footer = () => {
                         </div>
                         <div className="flex flex-col md:flex-row items-center">
                             <div className="flex flex-col md:flex-row items-center mb-4 md:mb-0">
-                                {MenuItems.map((item, index) => (
+                                {FooterMenuItems.map((item, index) => (
                                     <Link
                                         key={index}
                                         to={`/${item.toLowerCase()}`}
@@ -29,8 +29,7 @@ const Footer = () => {
                                         {item}
                                     </Link>
                                 ))}
-                            </div>
-                            <input type="text" placeholder='Enter Email' className='rounded-sm border-0 px-3 py-2 md:ml-3' />
+                            </div> 
                         </div>
                     </div>
                 </div>

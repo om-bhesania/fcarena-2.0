@@ -1,7 +1,7 @@
 // Nav.js
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Box, 
+  Box,
   IconButton,
   Drawer,
   DrawerOverlay,
@@ -12,13 +12,31 @@ import {
   useMediaQuery,
   Image,
   Stack,
+  DrawerCloseButton,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import Button from '../buttons/Button';
 import { MenuItems } from "../Utils/Data";
- 
+import { defineStyle, defineStyleConfig } from '@chakra-ui/react'
+
+const customIconButton = defineStyle({
+  background: 'orange.500',
+  color: 'white',
+  fontFamily: 'serif',
+  fontWeight: 'normal',
+
+  // let's also provide dark mode alternatives
+  _dark: {
+    background: 'orange.300',
+    color: 'orange.800',
+  }
+})
+
+export const buttonTheme = defineStyleConfig({
+  variants: { customIconButton },
+})
 
 export default function Nav() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -93,18 +111,14 @@ export default function Nav() {
 
               {/* Bookings button */}
 
-              <Flex gap={"20px"}>
+              <Flex gap={"20px"} align={'center'}>
                 <Button label={"Book Now"} variant={'primary'} url={'/bookings'} />
                 {!isLargerThanLg && (
                   <IconButton
+                  bg={'transparent'}
+                  color={'white'}
                     icon={
-                      <>
-                        {isOpen ? (
-                          <CloseIcon className="text-3xl" />
-                        ) : (
-                          <HamburgerIcon className="text-4xl" />
-                        )}
-                      </>
+                      <HamburgerIcon className="text-[40px] bg-transparent" />
                     }
                     onClick={handleToggle}
                     className={`cursor-pointer ${!isOpen ? "text-white" : "text-primary"}`}
@@ -112,11 +126,14 @@ export default function Nav() {
                 )}
 
                 <Drawer placement="top" onClose={onClose} isOpen={isOpen}  >
-                  <DrawerOverlay />
+                  <DrawerOverlay/>
                   <DrawerContent bg='white' pb={4}>
+                    <DrawerCloseButton className="mt-6">
+                      <i className="fa-solid fa-times text-3xl bg-transparent text-primary"></i>
+                    </DrawerCloseButton>
                     <DrawerBody>
                       {!isLargerThanLg && (
-                        <div className="text-xl mt-[120px]" />
+                        <div className="text-xl mt-12" />
                       )}
                       {MenuItems.map((item, index) => (
                         <Link
@@ -128,10 +145,12 @@ export default function Nav() {
                             : "text-primary"
                             }`}
                         >
-                        <span className="hover:before:block hover:underline-offset-8 hover:underline">
-                          {item}
 
-                        </span>
+
+                          <span className="hover:before:block hover:underline-offset-8 hover:underline">
+                            {item}
+
+                          </span>
                         </Link>
                       ))}
                     </DrawerBody>

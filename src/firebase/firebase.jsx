@@ -22,3 +22,8 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app)
 
 export {db}
+
+
+
+
+// firebase email bhesaniaom2022@gmail.com
