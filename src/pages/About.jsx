@@ -1,22 +1,9 @@
-import { useState } from "react";
+
 import { motion, AnimatePresence } from "framer-motion";
 import { info } from "../components/Utils/Data";
-import Button from "../components/buttons/Button";
 import Location from "../components/HomepageSections/Location"
-import Gallery from "../components/slider/Gallery";
 const About = () => {
-  const [expandedSections, setExpandedSections] = useState([]);
 
-  const toggleReadMore = (index) => {
-    setExpandedSections((prevExpanded) => {
-      const isExpanded = prevExpanded.includes(index);
-      if (isExpanded) {
-        return prevExpanded.filter((item) => item !== index);
-      } else {
-        return [...prevExpanded, index];
-      }
-    });
-  };
 
   return (
     <section className="about md:py-[7%] py-[30%]">
@@ -57,7 +44,6 @@ const About = () => {
         ))}
         <Location />
         <div className="gallery py-6 pt-[5%]">
-          {/* <Gallery /> */}
         </div>
       </div>
     </section>

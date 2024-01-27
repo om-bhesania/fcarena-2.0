@@ -1,5 +1,4 @@
 import InfoSection from "../components/HomepageSections/InfoSection"
-
 import HomePageBanner from "../components/hero/HomePageBanner"
 
 

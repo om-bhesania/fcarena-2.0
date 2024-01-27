@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/home";
+import Home from "./pages/Home";
 import About from "./pages/About";
 import Booking from "./pages/Booking";
 import WebFont from 'webfontloader';
@@ -11,11 +11,7 @@ import Timings from "./pages/Timings";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./components/Utils/PrivateRoutes";
-import Swiper from 'swiper'; 
-import  { Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+
 function App() {
 
   useEffect(() => {
@@ -25,28 +21,7 @@ function App() {
       }
     });
   }, []);
-  const swiper = new Swiper('.swiper', {
-    modules: [Navigation, Pagination],
-    // Optional parameters
-    direction: 'vertical',
-    loop: true,
 
-    // If we need pagination
-    pagination: {
-      el: '.swiper-pagination',
-    },
-
-    // Navigation arrows
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
-    },
-
-    // And if we need scrollbar
-    scrollbar: {
-      el: '.swiper-scrollbar',
-    },
-  });
 
   return (
     <>
