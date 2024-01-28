@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/* Custom Styles */
+@keyframes floating {
+  0% {
+    transform: translate(0, -4px);
+  }
+
+  50% {
+    transform: translate(0, 4px);
+  }
+
+  100% {
+    transform: translate(0, -4px);
+  }
+}
+
+@-webkit-keyframes floating {
+  0% {
+    transform: translate(0, -4px);
+  }
+
+  50% {
+    transform: translate(0, 4px);
+  }
+
+  100% {
+    transform: translate(0, -4px);
+  }
+}
+
+@-webkit-keyframes floating-phase {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(0, -4px);
+  }
+
+  75% {
+    transform: translate(0, 4px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* Tailwind CSS Classes */
+.arrow-down {
+  border: 20px;
+  height: 0;
+  width: 0;
+  border-left-width: 20px;
+  border-left-style: solid;
+  border-left-color: transparent;
+  border-right-width: 20px;
+  border-right-style: solid;
+  border-right-color: transparent;
+}
+
+.arrow-down.top-arrow {
+  border-top-width: 20px;
+  border-top-style: solid;
+  border-top-color: #EDF67D;
+  position: relative;
+  top: 10px;
+  animation: floating 2s infinite;
+  z-index: 10;
+}
+
+.arrow-down.bottom-arrow {
+  animation: floating-phase 2s infinite;
+  border-top-width: 20px;
+  border-top-style: solid;
+  border-top-color: #F2FFEF;
+}
+
+.arrow-down-unicode {
+  transform: scale(2, 1);
+}
+
+.mouse {
+  width: 50px;
+  height: 90px;
+  border: 3px solid #EDF67D;
+  border-radius: 60px;
+  position: relative;
+}
+
+.mouse::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #EDF67D;
+  border-radius: 50%;
+  opacity: 1;
+  animation: wheel 2s infinite;
+  -webkit-animation: wheel 2s infinite;
+}
+
+@keyframes wheel {
+  to {
+    opacity: 0;
+    top: 60px;
+  }
+}
+
+@-webkit-keyframes wheel {
+  to {
+    opacity: 0;
+    top: 60px;
+  }
+}
+
+@media (max-width:900px) {
+  .info-graphics {
+    flex-direction: column !important;
+  }
+
+  .info-graphics:nth-child(even) {
+    flex-direction: column !important;
+  }
+}
+
+.info-graphics img:last-child {
+  max-height: 500px !important;
+}
+
+.info-graphics:nth-child(even) {
+  flex-direction: row-reverse;
+}
