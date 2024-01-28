@@ -3,14 +3,25 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+<<<<<<< HEAD
   "type":"module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
+=======
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server.js"
+>>>>>>> HEAD/main
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "cors": "^2.8.5",
+>>>>>>> HEAD/main
     "express": "^4.18.2",
     "nodemon": "^3.0.3",
     "razorpay": "^2.9.2"
