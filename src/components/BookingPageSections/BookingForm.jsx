@@ -2,13 +2,16 @@ import { useState } from 'react';
 import {
     FormControl,
     FormLabel,
-    Input, 
+    Input,
     Select,
+    Spinner,
+    useToast,
 } from '@chakra-ui/react';
 import useAddBookings from '../../hooks/useAddBookings';
 import useManageBookings from '../../hooks/useManageBookings';
 import Button from '../buttons/Button';
-
+import { sendEmail } from '../Utils/Data';
+ 
 const BookingsForm = () => {
     const [name, setName] = useState('');
     const [contact, setContact] = useState('');
@@ -17,30 +20,74 @@ const BookingsForm = () => {
     const [timeSlot, setTimeSlot] = useState('');
     const [showMessage, setShowMessage] = useState(false);
     const { CreateBookings } = useAddBookings();
+    const toast = useToast();
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (contact.length !== 10 || name.trim() === '' || selectedDate === '' || timeSlot === '') {
             setShowAlert(true);
             return;
         }
-
         try {
-            await CreateBookings({
-                name,
-                contact,
-                date: selectedDate,
-                timeSlot,
+            toast({
+                title: 'Booking Successful',
+                description: 'Your booking has been confirmed.',
+                status: 'success',
+                duration: 7000,
+                position: 'top',
+                isClosable: true,
             });
-
+            handleBookingAndEmail()
             setShowMessage(true);
             setName('');
             setContact('');
+            handleDateChange('');
             setTimeSlot('');
         } catch (error) {
             console.error('Error storing form data:', error);
             setShowMessage(true);
+            toast({
+                title: 'Error',
+                description: 'Something went wrong. Please try again.',
+                status: 'error',
+                duration: 7000,
+                position: 'top',
+                isClosable: true,
+            });
         }
     };
+    const handleBookingAndEmail = async () => {
+        // const sendingToastId = toast({
+        //     title: 'Booking Slot',
+        //     description: (
+        //         <>
+        //             <Spinner size="sm" mr={2} /> Please wait...
+        //         </>
+        //     ),
+        //     status: 'info',
+        //     duration: null,
+        //     isClosable: false,
+        //     position: 'top'
+        // });
+
+
+        await CreateBookings({
+            name,
+            contact,
+            date: selectedDate,
+            timeSlot,
+        });
+
+        await sendEmail({
+            name,
+            email: contact,
+            message: `Booking Details:\nName: ${name}\nContact: ${contact}\nDate: ${selectedDate}\nTime Slot: ${timeSlot}`,
+            date: selectedDate,
+            timeSlot,
+        });
+
+        // toast.close(sendingToastId);
+    }
 
     return (
         <section className="bookings py-12 md:pt-[7%] pt-[31%]">
@@ -97,16 +144,9 @@ const BookingsForm = () => {
                                     ))}
                                 </Select>
                             </div>
-                            <Button role={'button'} label={'Book'} type={'submit'} customClass={'border-2 rounded ms:max-w-[30%] p-2 px-7 mt-4 mx-auto text-lg font-medium'} variant={'outlinePrimary'}/>
-
+                            <Button role={'button'} label={'Book'} type={'submit'} customClass={'border-2 rounded ms:max-w-[30%] p-2 px-7 mt-4 mx-auto text-lg font-medium'} variant={'outlinePrimary'} id="pay-button" />
                         </FormControl>
                     </form>
-                    {showMessage && (
-                        <span className={!error ? 'text-primary text-2xl font-bold rounded-lg items-center justify-start flex gap-3 py-2 ps-4 bg-green-500 bg-opacity-[0.4]' : 'text-red-600 text-2xl font-bold rounded-lg items-center justify-start flex gap-3 py-2 ps-4 bg-[#dc2626] bg-opacity-[0.4]'}>
-                            <i className="fa-regular fa-circle-check" style={{ color: !error ? '#004f2d' : '#dc2626' }}></i>
-                            {!error ? 'Successfully Booked' : 'Something Went Wrong !!'}
-                        </span>
-                    )}
                 </fieldset>
             </div>
         </section>

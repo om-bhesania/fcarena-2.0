@@ -44,7 +44,6 @@ export const categorizeTimeSlots = () => {
         if (startPeriod === 'pm' && startHour !== 12) {
             startHour += 12;
         }
-
         let endHour = parseInt(endTime);
         const endPeriod = endTime.includes('pm') ? 'pm' : 'am';
         if (endPeriod === 'pm' && endHour !== 12) {
@@ -74,6 +73,7 @@ export const categorizeTimeSlots = () => {
 import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import Images from './images';
+import emailjs from 'emailjs-com';
 
 
 
@@ -155,3 +155,43 @@ const syncTimeSlotsFromFirestore = async () => {
 };
 
 export default syncTimeSlotsFromFirestore;
+
+
+export const sendEmail = async (formData) => {
+    try {
+        let emailParams;
+
+        if (formData.email) {
+            // This is triggered from the contact form
+            emailParams = {
+                from_name: formData.name,
+                from_email: formData.email,
+                message: formData.message,
+            };
+        } else {
+            // This is triggered from the booking form
+            emailParams = {
+                from_name: formData.name,
+                from_email: formData.contact,
+                booking_date: formData.date,
+                time_slot: formData.timeSlot,
+            };
+        }
+
+        await emailjs.send(
+            'service_4h4oi58',
+            'template_44cxicl',
+            emailParams,
+            'PguK8OQaPD5-Azj-Y'
+        );
+
+
+        // Return some success response if needed
+        return { success: true };
+    } catch (error) {
+        console.error('Error sending email:', error);
+        throw new Error('Error sending email:', error);
+    }
+};
+
+

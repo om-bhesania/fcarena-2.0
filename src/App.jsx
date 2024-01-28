@@ -11,6 +11,8 @@ import Timings from "./pages/Timings";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./components/Utils/PrivateRoutes";
+import ContactUs from './pages/ContactUs';
+import Test from "./components/BookingPageSections/test";
 
 function App() {
 
@@ -34,7 +36,9 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/bookings" element={<Booking />} />
           <Route path="/timings" element={<Timings />} />
+          <Route path="/contactUs" element={<ContactUs />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/test" element={<Test />} />
           <Route path="/dashboard" element={<PrivateRoutes component={Dashboard} />} />
         </Routes>
         <Footer />

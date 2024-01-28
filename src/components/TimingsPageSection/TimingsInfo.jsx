@@ -32,16 +32,16 @@ const TimingsInfo = () => {
               <span className="text-lg text-bodyTextDark font-medium pt-3">Explore our available timings and pricing options</span>
             </div>
 
-            <div className="grid md:grid-cols-3 grid-rows-3 gap-12 mt-12">
+            <div className="grid md:grid-cols-3 md:grid-rows-1 grid-rows-3 gap-12 mt-12">
               {/* Morning Sessions */}
               <div className="bg-white p-6 rounded-md shadow-md flex flex-col">
-                <span className="text-3xl font-medium text-primary border-b pb-4">Morning Sessions</span>
+                <span className="text-3xl font-medium text-primary border-b pb-4 ">Morning Sessions</span>
                 <div className="flex-1 pb-5 overflow-y-auto max-h-[590px]">
                   {morningSlots.map((item, index) => (
                     <div key={index} className="flex justify-between items-center p-3 hover:border-2">
                       <span className="text-bodyTextDark font-medium text-lg">{item}</span>
                       <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
-                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary'} url={'/bookings'} />
+                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap'} url={'/bookings'} />
                     </div>
                   ))}
                 </div>
