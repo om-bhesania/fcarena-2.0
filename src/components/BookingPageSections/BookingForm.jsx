@@ -18,15 +18,15 @@ const BookingsForm = () => {
     const [name, setName] = useState('')
     const [contact, setContact] = useState('')
     const [showAlert, setShowAlert] = useState(false)
-    const { availableSlots, handleDateChange, selectedDate, timeSlotWithPrice } =
-        useManageBookings()
+    const { availableSlots, handleDateChange, selectedDate, timeSlotWithPrice } = useManageBookings()
     const [timeSlot, setTimeSlot] = useState('')
     const [showMessage, setShowMessage] = useState(false)
     const { CreateBookings } = useAddBookings()
     const toast = useToast()
     const urlParams = new URLSearchParams(window.location.search);
     const paymentSuccess = urlParams.get('PaymentSuccess');
-    console.log(timeSlotWithPrice);
+
+    // console.log(timeSlotWithPrice);
     useEffect(() => {
         if (paymentSuccess === 'true') {
             handlePaymentSuccess();
@@ -95,7 +95,21 @@ const BookingsForm = () => {
             description: 'Tutorial of RazorPay',
             image: 'https://avatars.githubusercontent.com/u/48543687?v=4',
             order_id: order.id,
-            callback_url: 'http://localhost:4000/api/paymentverification',
+            // callback_url: 'http://localhost:4000/api/paymentverification',
+            "handler":async function (response){
+                // console.log(response);
+                const {data:{success}} = await axios.post("http://localhost:4000/api/paymentverification",{
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature
+                });
+                if(success){
+                    handlePaymentSuccess();
+                } else {
+                    handlePaymentFailure();
+                }
+                
+            },
             prefill: {
                 name: name,
                 email: 'gaurav.kumar@example.com',
@@ -115,8 +129,6 @@ const BookingsForm = () => {
 
 
     const handleBookingAndEmail = async () => {
-
-
         await CreateBookings({
             name,
             contact,
