@@ -6,6 +6,8 @@ import { db } from "../firebase/firebase";
 const useManageBookings = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [availableSlots, setAvailableSlots] = useState([]);
+    const [timeSlot, setTimeSlot] = useState([]);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
@@ -32,9 +34,21 @@ const useManageBookings = () => {
 
     const handleDateChange = (newDate) => {
         setSelectedDate(newDate);
+    }; 
+    const fetchTimeSlots = async () => {
+        try {
+            const timeSlotsCollection = collection(db, 'timeSlots');
+            const snapshot = await getDocs(timeSlotsCollection);
+            console.log('Snapshot:', snapshot); // Log the snapshot
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            console.log('Data:', data); // Log the data
+            setTimeSlot(data); // Store data in local storage
+        } catch (error) {
+            console.error('Error fetching time slots data:', error);
+            setError('Error fetching time slots data'); // Set error message
+        }
     };
-
-    return { availableSlots, loading, error, handleDateChange, selectedDate };
+    return { availableSlots, loading, error, handleDateChange, selectedDate,fetchTimeSlots,timeSlot };
 };
 
 export default useManageBookings;

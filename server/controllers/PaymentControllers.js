@@ -9,6 +9,7 @@ export const checkout = async (req, res) => {
         currency: 'INR',
     }
     const order = await instance.orders.create(options)
+    console.log(order);
 
     res.status(200).json({
         success: true,
@@ -31,7 +32,8 @@ export const paymentVerification = async (req, res) => {
 
     if (isAuthentic) {
         result = true;
-        res.redirect('http://localhost:5173/bookings?PaymentSuccess=true')
+        res.redirect('http://localhost:5173/bookings?PaymentSuccess=true') 
+        
     } else {
         res.redirect('http://localhost:5173/bookings?PaymentSuccess=false')
     }
