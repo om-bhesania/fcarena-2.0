@@ -1,7 +1,6 @@
 import { instance } from '../server.js'
 import crypto from 'crypto'
 
-var result = false
 
 export const checkout = async (req, res) => {
     const options = {
@@ -31,10 +30,12 @@ export const paymentVerification = async (req, res) => {
     const isAuthentic = expectedSignature === razorpay_signature
 
     if (isAuthentic) {
-        result = true;
-        res.redirect('http://localhost:5173/bookings?PaymentSuccess=true') 
-        
+        res.json({
+            success: true,
+        })
     } else {
-        res.redirect('http://localhost:5173/bookings?PaymentSuccess=false')
+        res.json({
+            success: false,
+        })
     }
 }
