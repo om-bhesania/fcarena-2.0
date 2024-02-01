@@ -20,6 +20,9 @@ const BookingsForm = () => {
     const [showAlert, setShowAlert] = useState(false)
     const { availableSlots, handleDateChange, selectedDate, timeSlotWithPrice } = useManageBookings()
     const [timeSlot, setTimeSlot] = useState('')
+
+    //newly created price use state for dynamic price calculation according to slot
+    const [price,setPrice] = useState('');
     const [showMessage, setShowMessage] = useState(false)
     const { CreateBookings } = useAddBookings()
     const toast = useToast()
@@ -51,6 +54,7 @@ const BookingsForm = () => {
         setContact('')
         handleDateChange('')
         setTimeSlot('')
+        setPrice('')
     }
 
     const handlePaymentFailure = () => {
@@ -77,6 +81,7 @@ const BookingsForm = () => {
             return
         }
 
+
         const {
             data: { key },
         } = await axios.get('http://www.localhost:4000/api/getkey')
@@ -84,20 +89,18 @@ const BookingsForm = () => {
         const {
             data: { order },
         } = await axios.post('http://localhost:4000/api/checkout', {
-            amount: '500',
+            amount: price,
         })
 
         const options = {
             key,
-            amount: order.amount,
+            amount: price,
             currency: 'INR',
             name: "Om",
             description: 'Tutorial of RazorPay',
             image: 'https://avatars.githubusercontent.com/u/48543687?v=4',
             order_id: order.id,
-            // callback_url: 'http://localhost:4000/api/paymentverification',
             "handler":async function (response){
-                // console.log(response);
                 const {data:{success}} = await axios.post("http://localhost:4000/api/paymentverification",{
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_order_id: response.razorpay_order_id,
@@ -217,8 +220,8 @@ const BookingsForm = () => {
                                     }
                                 >
                                     {availableSlots.map((slot, index) => (
-                                        <option key={index} value={slot}>
-                                            {slot}
+                                        <option key={index} value={slot.time} onClick={() => setPrice(slot.price)}>
+                                            {slot.time}
                                         </option>
                                     ))}
                                 </Select>
