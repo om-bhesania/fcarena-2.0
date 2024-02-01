@@ -12,7 +12,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./components/Utils/PrivateRoutes";
 import ContactUs from './pages/ContactUs';
-import Test from "./components/BookingPageSections/test";
+import Error404 from "./pages/Error404";
 
 function App() {
 
@@ -38,10 +38,10 @@ function App() {
           <Route path="/timings" element={<Timings />} />
           <Route path="/contactUs" element={<ContactUs />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/test" element={<Test />} />
           <Route path="/dashboard" element={<PrivateRoutes component={Dashboard} />} />
         </Routes>
         <Footer />
+          {/* <Route path="/404" element={<Error404 />} /> */}
       </BrowserRouter>
     </>
   );
