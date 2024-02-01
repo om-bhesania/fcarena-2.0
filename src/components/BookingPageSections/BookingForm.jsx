@@ -84,11 +84,11 @@ const BookingsForm = () => {
 
         const {
             data: { key },
-        } = await axios.get('http://www.localhost:4000/api/getkey')
+        } = await axios.get('https://fcarena-server.netlify.app/api/getkey')
 
         const {
             data: { order },
-        } = await axios.post('http://localhost:4000/api/checkout', {
+        } = await axios.post('https://fcarena-server.netlify.app/api/checkout', {
             amount: price,
         })
 
@@ -101,7 +101,7 @@ const BookingsForm = () => {
             image: 'https://avatars.githubusercontent.com/u/48543687?v=4',
             order_id: order.id,
             "handler":async function (response){
-                const {data:{success}} = await axios.post("http://localhost:4000/api/paymentverification",{
+                const {data:{success}} = await axios.post("https://fcarena-server.netlify.app/api/paymentverification",{
                     razorpay_payment_id: response.razorpay_payment_id,
                     razorpay_order_id: response.razorpay_order_id,
                     razorpay_signature: response.razorpay_signature

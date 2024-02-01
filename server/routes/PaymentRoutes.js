@@ -10,6 +10,4 @@ router.route("/checkout").post(checkout);
 
 router.route("/paymentverification").post(paymentVerification);
 
-// router.route("/paymentres").get(checkpaymentstatus);
-
 export default router;
