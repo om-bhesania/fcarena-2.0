@@ -12,7 +12,6 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./components/Utils/PrivateRoutes";
 import ContactUs from './pages/ContactUs';
-import Error404 from "./pages/Error404";
 
 function App() {
 

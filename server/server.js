@@ -6,8 +6,9 @@ export const instance = new Razorpay({
   key_secret: process.env.RAZORPAY_APT_SECRET,
 });
 app.use(cors());
+
 app.listen(
-  process.env.PORT,
+  "https://main--heroic-puffpuff-8cd45f.netlify.app/",
   (res) => res.send("server is running ")
   // console.log(`Server is working on ${process.env.PORT}`)
 );

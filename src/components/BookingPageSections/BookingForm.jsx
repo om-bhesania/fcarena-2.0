@@ -83,14 +83,19 @@ const BookingsForm = () => {
 
 
         const {
-            data: { key },
-        } = await axios.get('http://www.localhost:4000/api/getkey')
+          data: { key },
+        } = await axios.get(
+          "https://main--heroic-puffpuff-8cd45f.netlify.app/api/getkey"
+        );
 
         const {
-            data: { order },
-        } = await axios.post('http://localhost:4000/api/checkout', {
+          data: { order },
+        } = await axios.post(
+          "https://main--heroic-puffpuff-8cd45f.netlify.app/api/checkout",
+          {
             amount: price,
-        })
+          }
+        );
 
         const options = {
             key,
