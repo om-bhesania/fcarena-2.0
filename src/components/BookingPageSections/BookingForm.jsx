@@ -85,13 +85,13 @@ const BookingsForm = () => {
         const {
           data: { key },
         } = await axios.get(
-          "https://main--heroic-puffpuff-8cd45f.netlify.app/api/getkey"
+          "https://fcarenavadodara.in/api/getkey"
         );
 
         const {
           data: { order },
         } = await axios.post(
-          "https://main--heroic-puffpuff-8cd45f.netlify.app/api/checkout",
+          "https://fcarenavadodara.in/api/checkout",
           {
             amount: price,
           }
