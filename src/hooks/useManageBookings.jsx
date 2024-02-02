@@ -16,7 +16,6 @@ const useManageBookings = () => {
             try {
                 const timeSlotsCollection = collection(db, 'timeSlots')
                 const snapshot = await getDocs(timeSlotsCollection)
-                console.log(timeSlotsCollection)
                 const slots = snapshot.docs.map((doc) => ({
                     id: doc.id,
                     time: doc.data().slot,

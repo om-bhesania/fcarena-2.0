@@ -3,17 +3,22 @@ import crypto from 'crypto'
 
 
 export const checkout = async (req, res) => {
-    const options = {
-        amount: Number(req.body.amount * 100),
-        currency: 'INR',
+    try{
+        const options = {
+            amount: Number(req.body.amount * 100),
+            currency: 'INR',
+        }
+        const order = await instance.orders.create(options)
+        res.status(200).json({
+            success: true,
+            order,
+        })
+    } catch(err){
+        res.status(404).json({
+            success:false,
+            error:err.message
+        })
     }
-    const order = await instance.orders.create(options)
-
-
-    res.status(200).json({
-        success: true,
-        order,
-    })
 }
 
 export const paymentVerification = async (req, res) => {
