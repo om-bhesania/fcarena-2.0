@@ -13,7 +13,7 @@ const useGetPrices = () => {
             setError(null);
 
             try {
-                const pricesCollectionRef = collection(db, 'masterDb');
+                const pricesCollectionRef = collection(db, 'prices');
                 const pricesSnapshot = await getDocs(pricesCollectionRef);
                 const pricesData = pricesSnapshot.docs.map(doc => ({
                     id: doc.id,
@@ -28,7 +28,7 @@ const useGetPrices = () => {
         };
 
         fetchPrices();
-    }, [/* Add dependencies here if needed */]);
+    }, []);
 
     return { loading, prices, error };
 };
