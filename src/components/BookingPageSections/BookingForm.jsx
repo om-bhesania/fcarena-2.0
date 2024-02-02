@@ -36,6 +36,7 @@ const BookingsForm = () => {
     }
   }, [paymentSuccess]);
 
+
   const handlePaymentSuccess = () => {
     toast({
       title: "Booking Successful",
@@ -53,6 +54,102 @@ const BookingsForm = () => {
     setTimeSlot("");
     setPrices("");
   };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (contact.length !== 10 || name.trim() === '' || selectedDate === '' || timeSlot === '') {
+            setShowAlert(true);
+            return;
+        }
+
+        try {
+            toast({
+                title: 'Booking Successful',
+                description: 'Your booking has been confirmed.',
+                status: 'success',
+                duration: 7000,
+                position: 'top',
+                isClosable: true,
+            });
+            handleBookingAndEmail()
+            setShowMessage(true);
+            setName('');
+            setContact('');
+            handleDateChange('');
+            setTimeSlot('');
+        } catch (error) {
+            console.error('Error storing form data:', error);
+            setShowMessage(true);
+            toast({
+                title: 'Error',
+                description: 'Something went wrong. Please try again.',
+                status: 'error',
+                duration: 7000,
+                position: 'top',
+                isClosable: true,
+            });
+
+
+
+        const {
+            data: { key },
+        } = await axios.get('http://www.localhost:4000/api/getkey')
+
+        const {
+            data: { order },
+        } = await axios.post('http://localhost:4000/api/checkout', {
+            amount: price,
+        })
+
+        const options = {
+            key,
+            amount: price,
+            currency: 'INR',
+            name: "Om",
+            description: 'Tutorial of RazorPay',
+            image: 'https://avatars.githubusercontent.com/u/48543687?v=4',
+            order_id: order.id,
+            "handler":async function (response){
+                const {data:{success}} = await axios.post("http://localhost:4000/api/paymentverification",{
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_signature: response.razorpay_signature
+                });
+                if(success){
+                    handlePaymentSuccess();
+                } else {
+                    handlePaymentFailure();
+                }
+                
+            },
+            prefill: {
+                name: name,
+                email: 'gaurav.kumar@example.com',
+                contact: contact,
+            },
+            notes: {
+                address: 'Razorpay Corporate Office',
+            },
+            theme: {
+                color: '#121212',
+            },
+
+        }
+    };
+    const handleBookingAndEmail = async () => {
+        // const sendingToastId = toast({
+        //     title: 'Booking Slot',
+        //     description: (
+        //         <>
+        //             <Spinner size="sm" mr={2} /> Please wait...
+        //         </>
+        //     ),
+        //     status: 'info',
+        //     duration: null,
+        //     isClosable: false,
+        //     position: 'top'
+        // });
+
 
   const handlePaymentFailure = () => {
     setShowMessage(true);
