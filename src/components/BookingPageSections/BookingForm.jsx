@@ -81,11 +81,11 @@ const BookingsForm = () => {
     try {
       const {
         data: { key },
-      } = await axios.get("http://localhost:4000/api/getkey");
+      } = await axios.get("https://fcarena-2-0.vercel.app/api/getkey");
 
       const {
         data: { order },
-      } = await axios.post("http://localhost:4000/api/checkout", {
+      } = await axios.post("https://fcarena-2-0.vercel.app/api/checkout", {
         amount: prices,
       });
 
@@ -101,7 +101,7 @@ const BookingsForm = () => {
           const {
             data: { success },
           } = await axios.post(
-            "http://localhost:4000/api/paymentverification",
+            "https://fcarena-2-0.vercel.app/api/paymentverification",
             {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
