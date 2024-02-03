@@ -70,100 +70,67 @@ export const categorizeTimeSlots = () => {
 
 
 // Function to duplicate timeSlots array and add default price
-import { addDoc, collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase/firebase';
 import Images from './images';
 import emailjs from 'emailjs-com';
+import { useEffect } from 'react';
 
 
 
-export const addDefaultPrice = async (defaultPrice) => {
-    const createTimeSlotsAndAddPrice = async (gap) => {
-        try {
-            const timeSlotsWithSession = [];
+export const addDefaultPrice = async () => {
 
-            // Fetch prices from the timeSlots collection
-            const timeSlotsSnapshot = await getDocs(collection(db, 'timeSlots'));
-            const timeSlotsData = timeSlotsSnapshot.docs.map(doc => doc.data());
+    const duplicateTimeSlotsAndAddPrice = () => {
+        // Use categorizeTimeSlots logic to get morning, afternoon, and night slots
+        const { morningSlots, afternoonSlots, nightSlots } = categorizeTimeSlots();
 
-            // Create time slots with the specified gap
-            for (let hour = 0; hour < 24; hour += gap) {
-                const startTime = formatTime(hour);
-                const endTime = formatTime(hour + gap);
+        // Create an array to hold time slots with session information
+        const timeSlotsWithSession = [];
 
-                // Adjust price if gap is 2 hours or more
-                let adjustedPrice = defaultPrice;
-                if (gap >= 2) {
-                    // Find the corresponding time slot in the timeSlots collection
-                    const timeSlot = timeSlotsData.find(slot => slot.time === `${startTime} - ${endTime}`);
-                    if (timeSlot) {
-                        // Adjust price based on the time slot price
-                        adjustedPrice = timeSlot.price * gap;
-                    }
-                }
+        // Add session information to morning slots
+        morningSlots.forEach(slot => {
+            timeSlotsWithSession.push({
+                slot,
+                price: 1200, // Default price
+                session: "morning"
+            });
+        });
 
-                timeSlotsWithSession.push({
-                    time: `${startTime} - ${endTime}`,
-                    price: adjustedPrice, // Use the adjusted price
-                });
-            }
+        // Add session information to afternoon slots
+        afternoonSlots.forEach(slot => {
+            timeSlotsWithSession.push({
+                slot,
+                price: 1200, // Default price
+                session: "afternoon"
+            });
+        });
 
-            // Store time slots in Firestore
-            await storeTimeSlotsInFirestore(timeSlotsWithSession, `${gap}HourGapTimeSlots`);
-            console.log(`Time slots with ${gap}-hour gap stored successfully in Firestore!`);
-        } catch (error) {
-            console.error(`Error creating and storing ${gap}-hour gap time slots in Firestore:`, error);
-        }
+        // Add session information to night slots
+        nightSlots.forEach(slot => {
+            timeSlotsWithSession.push({
+                slot,
+                price: 1200, // Default price
+                session: "night"
+            });
+        });
+
+        return timeSlotsWithSession;
     };
 
-    const formatTime = (hour) => {
-        const formattedHour = hour % 12 || 12;
-        const period = hour < 12 ? 'am' : 'pm';
-        return `${formattedHour}${period}`;
-    };
-
-    const storeTimeSlotsInFirestore = async (timeSlotsData, collectionName) => {
+    const storeTimeSlotsInFirestore = async (timeSlotsData) => {
         try {
-            const timeSlotsRef = collection(db, collectionName); // Reference to your Firestore collection
+            const timeSlotsRef = collection(db, 'timeSlots'); // Reference to your Firestore collection
             await Promise.all(timeSlotsData.map(slotData => addDoc(timeSlotsRef, slotData)));
-            console.log(`Time slots with ${collectionName} stored successfully in Firestore!`);
-    
-            // If the collectionName indicates a gap of 2 hours or more, update prices in the database
-            if (collectionName.includes('HourGapTimeSlots')) {
-                const pricesToUpdate = timeSlotsData.reduce((acc, curr) => {
-                    acc[curr.time] = curr.price;
-                    return acc;
-                }, {});
-    
-                await updatePricesInDatabase(pricesToUpdate);
-            }
+            console.log("Time slots data stored successfully in Firestore!");
         } catch (error) {
-            console.error(`Error storing time slots data in Firestore for ${collectionName}:`, error);
+            console.error("Error storing time slots data in Firestore:", error);
         }
     };
-    
-    const updatePricesInDatabase = async (pricesToUpdate) => {
-        try {
-            const pricesRef = collection(db, 'prices'); // Reference to your prices collection
-            await Promise.all(Object.entries(pricesToUpdate).map(([time, price]) => {
-                return updateDoc(doc(pricesRef, time), { price });
-            }));
-            console.log('Prices updated in the database successfully!');
-        } catch (error) {
-            console.error('Error updating prices in the database:', error);
-        }
-    };
-    
 
-    // Create time slots with 1-hour gap
-    await createTimeSlotsAndAddPrice(1);
-    // Create time slots with 2-hour gap
-    await createTimeSlotsAndAddPrice(2);
-    // Create time slots with 3-hour gap
-    await createTimeSlotsAndAddPrice(3);
-    // Create time slots with 4-hour gap
-    await createTimeSlotsAndAddPrice(4);
+    const timeSlotsWithPriceAndSession = duplicateTimeSlotsAndAddPrice();
+    await storeTimeSlotsInFirestore(timeSlotsWithPriceAndSession);
 };
+
 
 export const addDefaultPriceToFirestore = async () => {
     try {
@@ -175,7 +142,7 @@ export const addDefaultPriceToFirestore = async () => {
     }
 };
 
-const syncTimeSlotsFromFirestore = async () => {
+export const syncTimeSlotsFromFirestore = async () => {
     try {
         const timeSlotsCollection = collection(db, 'timeSlots');
         const snapshot = await getDocs(timeSlotsCollection);
@@ -189,7 +156,7 @@ const syncTimeSlotsFromFirestore = async () => {
     }
 };
 
-export default syncTimeSlotsFromFirestore;
+
 
 
 export const sendEmail = async (formData) => {
@@ -229,43 +196,7 @@ export const sendEmail = async (formData) => {
     }
 };
 
+
+
+
  
-export const deleteDuplicates = async () => {
-    try {
-        // Query to identify duplicates based on certain criteria
-        const querySnapshot = await db.collection('timeSlots')
-            .orderBy('field_to_check_duplicates')
-            .get();
-
-        const docsToDelete = [];
-        const seen = new Set();
-
-        // Loop through the documents to identify duplicates
-        querySnapshot.forEach((doc) => {
-            const fieldValue = doc.data().field_to_check_duplicates;
-
-            // If the field value is already in the Set, it's a duplicate
-            if (seen.has(fieldValue)) {
-                docsToDelete.push(doc.ref); // Add the document reference to the array for deletion
-            } else {
-                seen.add(fieldValue); // Add the field value to the Set
-            }
-        });
-
-        // Delete duplicate documents
-        await Promise.all(docsToDelete.map(async (docRef) => {
-            try {
-                await docRef.delete(); // Delete the document
-                console.log('Document successfully deleted:', docRef.id);
-            } catch (error) {
-                console.error('Error deleting document:', error);
-            }
-        }));
-
-        console.log('Duplicates successfully deleted.');
-    } catch (error) {
-        console.error('Error deleting duplicates:', error);
-    }
-};
-
-

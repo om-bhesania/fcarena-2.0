@@ -12,9 +12,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./components/Utils/PrivateRoutes";
 import ContactUs from './pages/ContactUs';
-import TimeSlotSelector from "./components/BookingPageSections/test";
-import { addDefaultPrice } from "./components/Utils/Data";
-
+import TimeSlotSelector from "./components/BookingPageSections/test";    
 function App() {
 
   useEffect(() => {
@@ -22,7 +20,7 @@ function App() {
       google: {
         families: ['Chromate Serif']
       }
-    });
+    });      
   }, []);
 
 

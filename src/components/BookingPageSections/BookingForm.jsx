@@ -9,25 +9,41 @@ import {
 import useAddBookings from "../../hooks/useAddBookings";
 import useManageBookings from "../../hooks/useManageBookings";
 import Button from "../buttons/Button";
-import { deleteDuplicates, sendEmail } from "../Utils/Data";
+
 import axios from "axios";
 import TimingsInfo from './../TimingsPageSection/TimingsInfo';
+import { sendEmail } from "../Utils/Data";
 
 const BookingsForm = () => {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [hour, setHour] = useState()
+
   const { availableSlots, handleDateChange, selectedDate } =
     useManageBookings();
   const [timeSlot, setTimeSlot] = useState("");
-
+  const [selectedSlots, setSelectedSlots] = useState([]);
   //newly created price use state for dynamic price calculation according to slot
   const [prices, setPrices] = useState("");
   const { CreateBookings } = useAddBookings();
   const toast = useToast();
   const urlParams = new URLSearchParams(window.location.search);
   const paymentSuccess = urlParams.get("PaymentSuccess");
-
+  const handleTimeSlotSelection = (selectedSlot) => {
+    setSelectedSlots(prevSelectedSlots => {
+      const updatedSelectedSlots = [...prevSelectedSlots];
+      const index = updatedSelectedSlots.indexOf(selectedSlot);
+      if (index > -1) {
+        // Deselect the slot if already selected
+        updatedSelectedSlots.splice(index, 1);
+      } else {
+        // Select the slot if not already selected
+        updatedSelectedSlots.push(selectedSlot);
+      }
+      return updatedSelectedSlots;
+    });
+  };
   useEffect(() => {
     if (paymentSuccess === "true") {
       handlePaymentSuccess();
@@ -51,6 +67,7 @@ const BookingsForm = () => {
     handleDateChange("");
     setTimeSlot("");
     setPrices("");
+    setHour("")
   };
 
   const handlePaymentFailure = () => {
@@ -91,9 +108,8 @@ const BookingsForm = () => {
         key,
         amount: prices,
         currency: "INR",
-        name: "Om",
-        description: "Tutorial of RazorPay",
-        image: "https://avatars.githubusercontent.com/u/48543687?v=4",
+        name: "FcArenaVadodara",
+        image: "/src/assets/logo.jpg",
         order_id: order.id,
         handler: async function (response) {
           const {
@@ -148,9 +164,9 @@ const BookingsForm = () => {
   };
 
   return (
-    <section className="bookings pb-12">
+    <section className="bookings py-12 md:pt-[7%] pt-[31%]">
       <div className="container mx-auto">
-        <TimingsInfo />
+       
         <fieldset className="border-dashed border-primary border-2 px-12 py-5 pb-[50px] md:max-w-[50%] max-w-full mx-auto">
           <legend className="text-4xl pb-3 text-primary font-semibold">
             Book Turf Now
@@ -193,6 +209,21 @@ const BookingsForm = () => {
                   </span>
                 )}
               </div>
+              {/* <div>
+                <FormLabel className="text-xl text-primary font-bold">
+                  Hours to Play
+                </FormLabel>
+                <Select
+                  placeholder={`Select No of hours you want to play`}
+                  value={hour}
+                  onChange={(e) => { setHour(e.target.value) }}
+                >
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                </Select>
+              </div> */}
               <div>
                 <FormLabel className="text-xl text-primary font-bold">
                   Date
@@ -206,9 +237,10 @@ const BookingsForm = () => {
                 />
               </div>
               <div>
-
                 <FormLabel className="text-xl text-primary font-bold">
-                  Time Slot
+                  Time Slot <span className="text-bodyTextDark text-[13px]">
+                      *you can add multiple slots by clicking on them one by one
+                    </span>
                 </FormLabel>
                 <Select
                   placeholder={`${!selectedDate ? "Please select a date First" : "Select from Available Slots"}`}
@@ -216,13 +248,15 @@ const BookingsForm = () => {
                   onChange={(e) => {
                     const selectedSlot = e.target.value;
                     setTimeSlot(selectedSlot);
+                    handleTimeSlotSelection(selectedSlot);
+
                     // Find the slot object corresponding to the selected time
                     const selectedSlotObject = availableSlots.find(
                       (slot) => slot.time === selectedSlot
                     );
                     // If the slot object is found, update the price state
                     if (selectedSlotObject) {
-                      setPrices(selectedSlotObject.price)
+                      setPrices(selectedSlotObject.price);
                     }
                   }}
                 >
@@ -232,8 +266,24 @@ const BookingsForm = () => {
                     </option>
                   ))}
                 </Select>
-
               </div>
+
+              {selectedDate && selectedSlots.length > 0 && (
+                <div>
+                  <FormLabel className="text-xl text-primary font-bold">
+                    Selected Time Slots 
+                  </FormLabel>
+                  <ul>
+                    {selectedSlots.map((selectedSlot, index) => (
+                      <li key={index}>{selectedSlot}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+
+
+
               <Button
                 role={"button"}
                 label={"Book"}
@@ -247,6 +297,7 @@ const BookingsForm = () => {
             </FormControl>
           </form>
         </fieldset>
+        <TimingsInfo />
       </div>
     </section>
   );
