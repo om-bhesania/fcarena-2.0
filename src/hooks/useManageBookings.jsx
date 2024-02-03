@@ -1,45 +1,64 @@
-import { useEffect, useState } from 'react'
-import { collection, getDocs } from 'firebase/firestore'
-import { db } from '../firebase/firebase'
+import { useEffect, useState } from 'react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '../firebase/firebase';
 
 const useManageBookings = () => {
-    const [selectedDate, setSelectedDate] = useState('')
-    const [availableSlots, setAvailableSlots] = useState([])
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(null)
+    const [selectedDate, setSelectedDate] = useState('');
+    const [availableSlots, setAvailableSlots] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchAvailableSlots = async () => {
-            if (!selectedDate) return
+            if (!selectedDate) return;
 
-            setLoading(true)
+            setLoading(true);
             try {
-                const timeSlotsCollection = collection(db, 'timeSlots')
-                const snapshot = await getDocs(timeSlotsCollection)
-                console.log(timeSlotsCollection)
-                const slots = snapshot.docs.map((doc) => ({
-                    id: doc.id,
-                    time: doc.data().slot,
-                    price: doc.data().price,
-                }))
+                const timeSlotsCollection = collection(db, 'timeSlots');
+                const snapshot = await getDocs(timeSlotsCollection);
 
-                setAvailableSlots(slots)
-                setLoading(false)
+                // Create an array to hold 24-hour time slots with 1-hour page slots
+                const slots = Array.from({ length: 24 }, (_, index) => {
+                    const hourStart = ((index + 1) % 12 || 12) + ' ' + (index >= 12 ? 'PM' : 'AM');
+                    const hourEnd = ((index + 2) % 12 || 12) + ' ' + ((index + 1) >= 12 ? 'PM' : 'AM');
+                    return {
+                        time: hourStart + ' - ' + hourEnd,
+                        slotsData: [],
+                    };
+                });
+
+                // Fill slotsData with the data from Firestore 
+                snapshot.forEach((doc) => { 
+                    const slotTime = parseInt(doc.data().slot.split(':')[0]);
+                    const price = doc.data().price;  
+                    slots[slotTime].slotsData.push({
+                        id: doc.id,
+                        price: price,  
+                    });
+                }); 
+
+
+                // Sort the slots data based on the time
+                slots.forEach((slot) => {
+                    slot.slotsData.sort((a, b) => a.price - b.price); // Sort by price
+                });
+
+                setAvailableSlots(slots);
+                setLoading(false);
             } catch (error) {
-                console.error('Error fetching available slots:', error)
-                setError('Error fetching available slots')
-                setLoading(false)
+                setError('Error fetching available slots');
+                setLoading(false);
             }
-        }
+        };
 
-        fetchAvailableSlots()
-    }, [selectedDate])
+        fetchAvailableSlots();
+    }, [selectedDate]);
 
     const handleDateChange = (newDate) => {
-        setSelectedDate(newDate)
-    }
-    // console.log(availableSlots)
-    return { availableSlots, loading, error, handleDateChange, selectedDate }
-}
+        setSelectedDate(newDate);
+    };
 
-export default useManageBookings
+    return { availableSlots, loading, error, handleDateChange, selectedDate };
+};
+
+export default useManageBookings;

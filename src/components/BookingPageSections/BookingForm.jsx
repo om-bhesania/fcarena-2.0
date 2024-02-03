@@ -9,20 +9,20 @@ import {
 import useAddBookings from "../../hooks/useAddBookings";
 import useManageBookings from "../../hooks/useManageBookings";
 import Button from "../buttons/Button";
-import { sendEmail } from "../Utils/Data";
+import { deleteDuplicates, sendEmail } from "../Utils/Data";
 import axios from "axios";
+import TimingsInfo from './../TimingsPageSection/TimingsInfo';
 
 const BookingsForm = () => {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [showAlert, setShowAlert] = useState(false);
-  const { availableSlots, handleDateChange, selectedDate, timeSlotWithPrice } =
+  const { availableSlots, handleDateChange, selectedDate } =
     useManageBookings();
   const [timeSlot, setTimeSlot] = useState("");
 
   //newly created price use state for dynamic price calculation according to slot
   const [prices, setPrices] = useState("");
-  const [showMessage, setShowMessage] = useState(false);
   const { CreateBookings } = useAddBookings();
   const toast = useToast();
   const urlParams = new URLSearchParams(window.location.search);
@@ -46,7 +46,6 @@ const BookingsForm = () => {
       isClosable: true,
     });
     handleBookingAndEmail();
-    setShowMessage(true);
     setName("");
     setContact("");
     handleDateChange("");
@@ -55,7 +54,6 @@ const BookingsForm = () => {
   };
 
   const handlePaymentFailure = () => {
-    setShowMessage(true);
     toast({
       title: "Error",
       description: "Something went wrong. Please try again.",
@@ -150,12 +148,14 @@ const BookingsForm = () => {
   };
 
   return (
-    <section className="bookings py-12 md:pt-[7%] pt-[31%]">
+    <section className="bookings pb-12">
       <div className="container mx-auto">
+        <TimingsInfo />
         <fieldset className="border-dashed border-primary border-2 px-12 py-5 pb-[50px] md:max-w-[50%] max-w-full mx-auto">
           <legend className="text-4xl pb-3 text-primary font-semibold">
             Book Turf Now
           </legend>
+
           <form onSubmit={handleSubmit}>
             <FormControl className="flex flex-col gap-6">
               <div>
@@ -206,11 +206,12 @@ const BookingsForm = () => {
                 />
               </div>
               <div>
+
                 <FormLabel className="text-xl text-primary font-bold">
                   Time Slot
                 </FormLabel>
                 <Select
-                  placeholder="Select from Available Slots"
+                  placeholder={`${!selectedDate ? "Please select a date First" : "Select from Available Slots"}`}
                   value={timeSlot}
                   onChange={(e) => {
                     const selectedSlot = e.target.value;
@@ -227,10 +228,11 @@ const BookingsForm = () => {
                 >
                   {availableSlots.map((slot, index) => (
                     <option key={index} value={slot.time}>
-                      {slot.time}
+                      {`${slot.time}`}
                     </option>
                   ))}
                 </Select>
+
               </div>
               <Button
                 role={"button"}

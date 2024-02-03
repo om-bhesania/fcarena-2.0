@@ -1,14 +1,14 @@
-import { data } from "autoprefixer";
-import React from "react";
+import { deleteDuplicates } from "../Utils/Data";
 
-const Test = () => {
- fetch("https://crossorigin.me/https://fcarena-2-0-server.vercel.app")
-   .then((res) => res.json())
-   .then((data) => console.log(data))
-   .catch((error) => console.error("Error fetching data:", error));
+ 
+const TimeSlotSelector = () => {
+ 
 
-
-  return <div>{data}</div>;
+  return (
+    <>
+       <button onClick={deleteDuplicates}>Delete Duplicates</button>
+    </>
+  );
 };
 
-export default Test;
+export default TimeSlotSelector;

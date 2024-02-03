@@ -32,9 +32,9 @@ const Dashboard = () => {
         try {
             const timeSlotsCollection = collection(db, 'timeSlots');
             const snapshot = await getDocs(timeSlotsCollection);
-            console.log('Snapshot:', snapshot); // Log the snapshot
+            
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            console.log('Data:', data); // Log the data
+            
             setTimeSlots(data);
             setSearchResults(data); // Initialize search results with all time slots
             localStorage.setItem('timeSlots', JSON.stringify(data)); // Store data in local storage
@@ -49,9 +49,9 @@ const Dashboard = () => {
         try {
             const bookingsCollection = collection(db, 'bookings');
             const snapshot = await getDocs(bookingsCollection);
-            console.log('Snapshot:', snapshot);
+            
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            console.log('Data:', data);
+            
             setBookings(data);
             localStorage.setItem('bookings', JSON.stringify(data));
         } catch (error) {
@@ -218,9 +218,9 @@ const Dashboard = () => {
     // Function to handle search
     useEffect(() => {
         const results = timeSlots.filter(slot =>
-            slot.slot.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slot.session.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            slot.price.toString().includes(searchTerm.toLowerCase())
+            slot.slot?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slot.session?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            slot.price?.toString().includes(searchTerm.toLowerCase())
         );
         setSearchResults(results);
     }, [searchTerm, timeSlots]);

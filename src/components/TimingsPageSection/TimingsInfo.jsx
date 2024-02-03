@@ -38,10 +38,12 @@ const TimingsInfo = () => {
                 <span className="text-3xl font-medium text-primary border-b pb-4 ">Morning Sessions</span>
                 <div className="flex-1 pb-5 overflow-y-auto max-h-[590px]">
                   {morningSlots.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center p-3 hover:border-2">
-                      <span className="text-bodyTextDark font-medium text-lg">{item}</span>
+                    <div key={index} className="flex justify-between items-center gap p-3 hover:border-2">
+                      <div className="flex items-center md:flex-row flex-col gap-8">
+                        <span className="text-bodyTextDark font-medium text-lg">{item}</span>
                       <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
-                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap'} url={'/bookings'} />
+                      </div>
+                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
                     </div>
                   ))}
                 </div>
@@ -52,10 +54,12 @@ const TimingsInfo = () => {
                 <span className="text-3xl font-medium text-primary border-b pb-4">Afternoon Sessions</span>
                 <div className="flex-1 pb-5 overflow-y-auto max-h-[590px]">
                   {afternoonSlots.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center p-3 hover:border-2">
-                      <span className="text-bodyTextDark font-medium text-lg">{item}</span>
+                    <div key={index} className="flex justify-between items-center gap p-3 hover:border-2">
+                      <div className="flex items-center md:flex-row flex-col gap-8">
+                        <span className="text-bodyTextDark font-medium text-lg">{item}</span>
                       <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
-                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary'} url={'/bookings'} />
+                      </div>
+                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
                     </div>
                   ))}
                 </div>
@@ -66,10 +70,12 @@ const TimingsInfo = () => {
                 <span className="text-3xl font-medium text-primary border-b pb-4">Evening and Night Sessions</span>
                 <div className="flex-1 pb-5 overflow-y-auto max-h-[590px]">
                   {nightSlots.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center hover:border-2 p-3">
-                      <span className="text-bodyTextDark font-medium text-lg">{item}</span>
+                    <div key={index} className="flex justify-between items-center md:flex-row flex-col md:gap-0 gap-5 border-b hover:border-2 p-3">
+                      <div className="flex items-center md:flex-row flex-col gap-8">
+                        <span className="text-bodyTextDark font-medium text-lg">{item}</span>
                       <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
-                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary'} url={'/bookings'} />
+                      </div>
+                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
                     </div>
                   ))}
                 </div>
