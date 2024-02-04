@@ -13,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./components/Utils/PrivateRoutes";
 import ContactUs from './pages/ContactUs';
 import TimeSlotSelector from "./components/BookingPageSections/test";    
+import { addDefaultPrice } from "./components/Utils/Data";
 function App() {
 
   useEffect(() => {

@@ -16,11 +16,13 @@ import {
     Select,
 } from '@chakra-ui/react';
 import useManageBookings from '../hooks/useManageBookings';
+import axios from 'axios';
 
 
 const Dashboard = () => {
     const { availableSlots } = useManageBookings();
     const [timeSlots, setTimeSlots] = useState([]);
+    const [singleSlot,setSingleSlot] = useState("");
     const [newPriceForAll, setNewPriceForAll] = useState('');
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -49,9 +51,7 @@ const Dashboard = () => {
         try {
             const bookingsCollection = collection(db, 'bookings');
             const snapshot = await getDocs(bookingsCollection);
-            
             const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            
             setBookings(data);
             localStorage.setItem('bookings', JSON.stringify(data));
         } catch (error) {
@@ -67,9 +67,30 @@ const Dashboard = () => {
         }
     };
 
+    async function holdForFiveSeconds() {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve();
+            }, 1000); // 5000 milliseconds = 5 seconds
+        });
+    }
 
-    const handleCancelBooking = async (id) => {
+
+    const handleCancelBooking = async (id,payment_id,amount) => {
         try {
+            const refund_receipt = await axios.post(`https://fcarena-final.vercel.app/api/refund/${payment_id}`,{
+                amount: amount,
+            });
+
+            if (!refund_receipt.status === 201){
+                toast({
+                    title: 'Error',
+                    description: 'Failed to process refund.',
+                    status: 'error',
+                    duration: 5000,
+                    isClosable: true,
+                });
+            }
             // Remove booking from Firestore
             await deleteDoc(doc(db, 'bookings', id));
 
@@ -85,9 +106,18 @@ const Dashboard = () => {
                 title: 'Success',
                 description: 'Booking canceled successfully.',
                 status: 'success',
-                duration: 5000,
+                duration: 2000,
                 isClosable: true,
             });
+            await holdForFiveSeconds();
+            toast({
+                title:"Success",
+                description:"Amount will be refund in 2-3 bussiness days.",
+                status:"success",
+                duration:3000,
+                isClosable: true,
+            })
+            
         } catch (error) {
             console.error('Error canceling booking:', error);
             toast({
@@ -228,6 +258,7 @@ const Dashboard = () => {
     useEffect(() => {
         const storedTimeSlots = localStorage.getItem('timeSlots');
         const storedBookings = localStorage.getItem('bookings');
+        fetchBookings();
 
         if (storedTimeSlots) {
             setTimeSlots(JSON.parse(storedTimeSlots));
@@ -382,7 +413,15 @@ const Dashboard = () => {
                                                                 <span className='text-lg font-semibold text-primary'>Date :</span> <Badge px="2" mb={2} colorScheme="teal" className='text-bodyTextDark font-medium text-lg'> {booking.date}</Badge>
                                                             </div>
                                                             <div className=''>
-                                                                <span className='text-lg font-semibold text-primary'>Time Slot :</span> <Badge className='text-bodyTextDark font-medium text-lg'>{booking.timeSlot}</Badge>
+                                                                <span className='text-lg font-semibold text-primary'>Time Slot :</span>
+                                                                {
+                                                                    booking.timeSlots.map((slot,index)=>{
+                                                                        return(
+                                                                            <Badge key={index} className='text-bodyTextDark mr-2 font-medium text-lg' on>{slot}</Badge>
+                                                                        )
+                                                                    })
+                                                                }
+                                                                
                                                             </div>
                                                         </Box>
 
@@ -409,7 +448,7 @@ const Dashboard = () => {
                                                             role={'button'}
                                                             customClass={'text-primary py-2 px-5 border-blue-900'}
                                                         />
-                                                        <Button variant={'outlinePrimary'} onClick={() => handleCancelBooking(booking.id)} label={
+                                                        <Button variant={'outlinePrimary'} onClick={() => handleCancelBooking(booking.id,booking.payment_id,booking.Amount_payed)} label={
                                                             <>
                                                                 <span className='whitespace-nowrap text-red-700'><span className='me-1'>Cancel Booking</span> <i className="fas fa-trash text-red-700"></i></span>
                                                             </>

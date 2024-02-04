@@ -4,15 +4,16 @@ import { db } from "../firebase/firebase";
 const useAddBookings = () => {
     const bookingsCollectionRef = collection(db, "bookings");
 
-    const CreateBookings = async ({ name, contact, date, timeSlot,Payment_id }) => {
+    const CreateBookings = async ({ name, contact, date, timeSlots,payment_id,Amount_payed }) => {
         try {
             await addDoc(bookingsCollectionRef, {
                 name,
-                Payment_id,
+                payment_id,
                 contact,
                 date,
-                timeSlot,
+                timeSlots,
                 createdAt: serverTimestamp(),
+                Amount_payed,
             });
             return true; // Return true if booking creation is successful
         } catch (error) { 
