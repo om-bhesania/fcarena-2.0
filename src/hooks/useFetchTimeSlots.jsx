@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+
 const useFetchTimeSlots = () => {
   const [timeSlotData, setTimeSlotData] = useState([]);
   const [loading, setLoading] = useState(true);

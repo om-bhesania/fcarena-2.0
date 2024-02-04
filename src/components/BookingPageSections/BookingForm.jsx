@@ -15,42 +15,45 @@ import TimingsInfo from './../TimingsPageSection/TimingsInfo';
 import { sendEmail } from "../Utils/Data";
 
 const BookingsForm = () => {
+  var prices = 0
+  let payment_id;
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [showAlert, setShowAlert] = useState(false);
   const [hour, setHour] = useState()
-
+  const [isLoading,setIsLoading] = useState(false);
+  // const [prices,setPrices] = useState(0);
   const { availableSlots, handleDateChange, selectedDate } =
     useManageBookings();
   const [timeSlot, setTimeSlot] = useState("");
   const [selectedSlots, setSelectedSlots] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
   //newly created price use state for dynamic price calculation according to slot
-  const [prices, setPrices] = useState("");
+  
   const { CreateBookings } = useAddBookings();
   const toast = useToast();
   const urlParams = new URLSearchParams(window.location.search);
   const paymentSuccess = urlParams.get("PaymentSuccess");
-  const handleTimeSlotSelection = (selectedSlot) => {
+
+
+
+  const handleTimeSlotSelection = (selectedSlot,price) => {
+
     setSelectedSlots(prevSelectedSlots => {
       const updatedSelectedSlots = [...prevSelectedSlots];
       const index = updatedSelectedSlots.indexOf(selectedSlot);
       if (index > -1) {
         // Deselect the slot if already selected
         updatedSelectedSlots.splice(index, 1);
+        setTotalPrice(totalPrice - price)
       } else {
         // Select the slot if not already selected
         updatedSelectedSlots.push(selectedSlot);
+        setTotalPrice(totalPrice + price);
       }
       return updatedSelectedSlots;
     });
   };
-  useEffect(() => {
-    if (paymentSuccess === "true") {
-      handlePaymentSuccess();
-    } else if (paymentSuccess === "false") {
-      handlePaymentFailure();
-    }
-  }, [paymentSuccess]);
 
   const handlePaymentSuccess = () => {
     toast({
@@ -66,8 +69,10 @@ const BookingsForm = () => {
     setContact("");
     handleDateChange("");
     setTimeSlot("");
-    setPrices("");
+    setTotalPrice(0);
+    prices = 0;
     setHour("")
+    setSelectedSlots([]);
   };
 
   const handlePaymentFailure = () => {
@@ -81,7 +86,7 @@ const BookingsForm = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
       contact.length !== 10 ||
@@ -92,8 +97,14 @@ const BookingsForm = () => {
       setShowAlert(true);
       return;
     }
-
+    setIsLoading(true);
     try {
+      const toastId = toast({
+        title:'Loading...',
+        description:"Please wait while we process your payment.",
+        duration: null,
+        isClosable: true,
+      })
       const {
         data: { key },
       } = await axios.get("https://fcarena-final.vercel.app/api/getkey");
@@ -101,19 +112,21 @@ const BookingsForm = () => {
       const {
         data: { order },
       } = await axios.post("https://fcarena-final.vercel.app/api/checkout", {
-        amount: prices,
+        amount: totalPrice,
       });
+
+      //https://fcarena-final.vercel.app/api/checkout
 
       const options = {
         key,
-        amount: prices,
+        amount: totalPrice,
         currency: "INR",
         name: "FcArenaVadodara",
         image: "/src/assets/logo.jpg",
         order_id: order.id,
         handler: async function (response) {
           const {
-            data: { success },
+            data: { success,id },
           } = await axios.post("https://fcarena-final.vercel.app/api/paymentverification",
             {
               razorpay_payment_id: response.razorpay_payment_id,
@@ -122,10 +135,12 @@ const BookingsForm = () => {
             }
           );
           if (success) {
-            handlePaymentSuccess();
+            payment_id = id;
+            handlePaymentSuccess()
           } else {
             handlePaymentFailure();
           }
+          
         },
         prefill: {
           name: name,
@@ -141,6 +156,8 @@ const BookingsForm = () => {
       };
       const razor = new window.Razorpay(options);
       razor.open();
+      setIsLoading(false)
+          toast.close(toastId);
     } catch (error) {
       console.log(error);
     }
@@ -151,7 +168,9 @@ const BookingsForm = () => {
       name,
       contact,
       date: selectedDate,
-      timeSlot,
+      timeSlots: selectedSlots,
+      payment_id,
+      Amount_payed: totalPrice,
     });
 
     await sendEmail({
@@ -162,6 +181,7 @@ const BookingsForm = () => {
       timeSlot,
     });
   };
+
 
   return (
     <section className="bookings py-12 md:pt-[7%] pt-[31%]">
@@ -248,17 +268,17 @@ const BookingsForm = () => {
                   onChange={(e) => {
                     const selectedSlot = e.target.value;
                     setTimeSlot(selectedSlot);
-                    handleTimeSlotSelection(selectedSlot);
-
+                    
                     // Find the slot object corresponding to the selected time
                     const selectedSlotObject = availableSlots.find(
                       (slot) => slot.time === selectedSlot
-                    );
-                    // If the slot object is found, update the price state
-                    if (selectedSlotObject) {
-                      setPrices(selectedSlotObject.price);
-                    }
-                  }}
+                      );
+                      // If the slot object is found, update the price state
+                      if (selectedSlotObject) {
+                        prices = selectedSlotObject.price
+                      }
+                      handleTimeSlotSelection(selectedSlot,prices);
+                    }}
                 >
                   {availableSlots.map((slot, index) => (
                     <option key={index} value={slot.time}>
