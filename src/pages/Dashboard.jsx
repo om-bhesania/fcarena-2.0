@@ -480,7 +480,7 @@ const Dashboard = () => {
                                 <span className="text-lg font-semibold text-primary">
                                   Time Slot :
                                 </span>
-                                 {(() => 
+{/*                                  {(() => 
                                                                 { const badgeComponents =[]
                                                                     const timeSlot_arr = booking.timeSlots;
                                                                     if(timeSlot_arr.length == 0){
@@ -505,7 +505,7 @@ const Dashboard = () => {
                                                                         )
                                                                     }
                                                                     return badgeComponents
-                                                                })()}
+                                                                })()} */}
                               </div>
                             </Box>
 
