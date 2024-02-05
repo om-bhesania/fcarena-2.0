@@ -12,15 +12,15 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import PrivateRoutes from "./components/Utils/PrivateRoutes";
 import ContactUs from './pages/ContactUs';
-
+import TimeSlotSelector from "./components/BookingPageSections/test";    
+import { addDefaultPrice, addDefaultPriceToFirestore } from "./components/Utils/Data";
 function App() {
-
   useEffect(() => {
     WebFont.load({
       google: {
         families: ['Chromate Serif']
       }
-    });
+    });      
   }, []);
 
 
@@ -37,6 +37,7 @@ function App() {
           <Route path="/timings" element={<Timings />} />
           <Route path="/contactUs" element={<ContactUs />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/test" element={<TimeSlotSelector/>} />
           <Route path="/dashboard" element={<PrivateRoutes component={Dashboard} />} />
         </Routes>
         <Footer />
