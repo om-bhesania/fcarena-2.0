@@ -27,13 +27,22 @@ const useManageBookings = () => {
                 });
 
                 // Fill slotsData with the data from Firestore 
-                snapshot.forEach((doc) => { 
-                    const slotTime = parseInt(doc.data().slot.split(':')[0]);
-                    const price = doc.data().price;
-                    slots.forEach(slot => slot.price = price );
+                snapshot.forEach((doc) => {
+                  const slotTime = parseInt(doc.data().slot.split(":")[0]);
+                  const price = doc.data().price;
+
+                  // Find the index in slots array corresponding to the slotTime
+                  const index = slotTime % 12;
+                  const updatedSlots = [...slots];
+
+                  // Update the price for the specific slot in the array
+                  updatedSlots[index] = { ...updatedSlots[index], price };
+
+                  // Update availableSlots state
+                  setAvailableSlots(updatedSlots);
+                  setLoading(false);
                 });
-                setAvailableSlots(slots);
-                setLoading(false);
+
             } catch (error) {
                 setError('Error fetching available slots');
                 setLoading(false);
