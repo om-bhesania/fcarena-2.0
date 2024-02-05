@@ -115,19 +115,20 @@ const BookingsForm = () => {
         amount: totalPrice,
       });
 
-      //https://fcarena-final.vercel.app/api/checkout
+      //https://fcarena-final.vercel.app/api/checkou  t
 
       const options = {
         key,
         amount: totalPrice,
         currency: "INR",
         name: "FcArenaVadodara",
-        image: "/src/assets/logo.jpg",
+        image: "../../assets/logo.png",
         order_id: order.id,
         handler: async function (response) {
           const {
-            data: { success,id },
-          } = await axios.post("https://fcarena-final.vercel.app/api/paymentverification",
+            data: { success, id },
+          } = await axios.post(
+            "https://fcarena-final.vercel.app/api/paymentverification",
             {
               razorpay_payment_id: response.razorpay_payment_id,
               razorpay_order_id: response.razorpay_order_id,
@@ -136,11 +137,10 @@ const BookingsForm = () => {
           );
           if (success) {
             payment_id = id;
-            handlePaymentSuccess()
+            handlePaymentSuccess();
           } else {
             handlePaymentFailure();
           }
-          
         },
         prefill: {
           name: name,
@@ -151,7 +151,7 @@ const BookingsForm = () => {
           address: "Razorpay Corporate Office",
         },
         theme: {
-          color: "#121212",
+          color: "#004F2D",
         },
       };
       const razor = new window.Razorpay(options);
