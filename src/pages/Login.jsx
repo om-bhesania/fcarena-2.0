@@ -17,7 +17,7 @@ const Login = () => {
     function handleSubmit(e) {
         e.preventDefault();
 
-        if (username === 'admin' && password === '--FcArenaVadodara@123--') {
+        if (username === 'admin' && password === 'admin') {
             setLoginStatus('success');
             redirectToDashboard();
             const LoginAuthToken = uuidv4()

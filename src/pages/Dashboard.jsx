@@ -187,6 +187,7 @@ const Dashboard = () => {
 
       await updateDoc(bookingDocRef, newData);
 
+
       const updatedBookings = bookings.map((booking) => {
         if (booking.id === id) {
           return { ...booking, ...newData };
@@ -417,6 +418,7 @@ const Dashboard = () => {
                           </div>
                         </div>
                       ))}
+
                     </div>
                   )}
                 </div>

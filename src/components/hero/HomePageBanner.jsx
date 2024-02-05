@@ -11,6 +11,7 @@ const HomePageBanner = () => {
         <video
           loop
           autoPlay
+          playsInline
           muted
           preload="auto"
           className="w-full lg:h-[100%] h-[950px] object-cover mt-[-8rem] -z-[3] before:content-[''] before:bg-black relative"
@@ -19,8 +20,8 @@ const HomePageBanner = () => {
           Your browser does not support the video tag.
         </video>
         <motion.div
-          initial={{ opacity: 0,}}
-          animate={{ opacity: 1,}}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 2.5, delay: 1 }}
         >
           <HomePageBannerText

@@ -52,6 +52,7 @@ const useManageBookings = () => {
                 }
 
                 setLoading(false);
+
             } catch (error) {
                 setError('Error fetching available slots');
                 setLoading(false);
