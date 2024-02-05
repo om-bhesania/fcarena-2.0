@@ -89,7 +89,7 @@ export const addDefaultPrice = async () => {
         morningSlots.forEach(slot => {
             timeSlotsWithSession.push({
                 slot,
-                price: 1200, // Default price
+                price: 500, // Default price
                 session: "morning"
             });
         });
@@ -98,7 +98,7 @@ export const addDefaultPrice = async () => {
         afternoonSlots.forEach(slot => {
             timeSlotsWithSession.push({
                 slot,
-                price: 1200, // Default price
+                price: 500, // Default price
                 session: "afternoon"
             });
         });
@@ -107,7 +107,7 @@ export const addDefaultPrice = async () => {
         nightSlots.forEach(slot => {
             timeSlotsWithSession.push({
                 slot,
-                price: 1200, // Default price
+                price: 500, // Default price
                 session: "night"
             });
         });
