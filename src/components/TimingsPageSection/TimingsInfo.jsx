@@ -29,7 +29,7 @@ const TimingsInfo = () => {
           <div className="mx-auto">
             <div className="flex flex-col items-center">
               <span className="text-5xl font-bold text-primary">Timings and Pricing</span>
-              <span className="text-lg text-bodyTextDark font-medium pt-3">Explore our available timings and pricing options</span>
+              <span className="text-lg text-bodyTextDark font-medium pt-3">Explore our available timings and pricing options note these are advance charges for the turf</span>
             </div>
 
             <div className="grid md:grid-cols-3 md:grid-rows-1 grid-rows-3 gap-12 mt-12">
