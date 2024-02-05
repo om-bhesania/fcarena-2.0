@@ -182,11 +182,9 @@ const Dashboard = () => {
   };
   const handleModifyBooking = async (id, newData) => {
     try {
-   
       const bookingDocRef = doc(db, "bookings", id);
 
       await updateDoc(bookingDocRef, newData);
-
 
       const updatedBookings = bookings.map((booking) => {
         if (booking.id === id) {
@@ -325,7 +323,7 @@ const Dashboard = () => {
                         Sync <i className="fas fa-sync"></i>
                       </>
                     }
-                    onClick={handleSyncTimeSlots} // Call sync function on button click
+                    onClick={handleSyncTimeSlots}
                   />
                 </div>
 
@@ -366,64 +364,74 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     <div className="flex flex-col mt-6 gap-4">
-                      {searchResults.map((slot) => (
-                        <div
-                          key={slot.id}
-                          className="p-4 border rounded-lg flex md:flex-row flex-col md:items-center items-start md:justify-between "
-                        >
-                          <div className="flex flex-col gap-3">
-                            <span className="badge">
-                              {slot.session === "morning" ? (
-                                <Badge variant="subtle" colorScheme="green">
-                                  {slot.session}
-                                </Badge>
-                              ) : slot.session === "afternoon" ? (
-                                <Badge variant="subtle" colorScheme="orange">
-                                  {slot.session}
-                                </Badge>
-                              ) : (
-                                <Badge variant="subtle" colorScheme="purple">
-                                  {slot.session}
-                                </Badge>
-                              )}
-                            </span>
-                            <p className="text-xl font-semibold">{slot.slot}</p>
-                          </div>
-                          <div className="text-gray-600 flex md:items-center items-start md:flex-row flex-col gap-5">
-                            <div className="flex md:flex-row gap-6 items-center">
-                              <input
-                                type="number"
-                                value={slot.price}
-                                onChange={(e) =>
-                                  handleModifyPrice(slot.id, e.target.value)
-                                }
-                                className="h-8 sm:h-10 md:h-12 border-primary border rounded-md p-2 font-medium"
-                              />
-                              <Button
-                                onClick={() =>
-                                  handleModifyPrice(slot.id, slot.price)
-                                }
-                                variant={"outlinePrimary"}
-                                label={
-                                  <>
-                                    <span className="whitespace-nowrap">
-                                      <span>Save</span>{" "}
-                                      <i className="fas fa-save"></i>
-                                    </span>
-                                  </>
-                                }
-                                customClass={"text-primary flex-1"}
-                              />
+                      {timeSlots && timeSlots.length > 0
+                        ? timeSlots.map((slot) => (
+                            <div
+                              key={slot.id}
+                              className="p-4 border rounded-lg flex md:flex-row flex-col md:items-center items-start md:justify-between "
+                            >
+                              <div className="flex flex-col gap-3">
+                                <span className="badge">
+                                  {slot.session === "morning" ? (
+                                    <Badge variant="subtle" colorScheme="green">
+                                      {slot.session}
+                                    </Badge>
+                                  ) : slot.session === "afternoon" ? (
+                                    <Badge
+                                      variant="subtle"
+                                      colorScheme="orange"
+                                    >
+                                      {slot.session}
+                                    </Badge>
+                                  ) : (
+                                    <Badge
+                                      variant="subtle"
+                                      colorScheme="purple"
+                                    >
+                                      {slot.session}
+                                    </Badge>
+                                  )}
+                                </span>
+                                <p className="text-xl font-semibold">
+                                  {slot.slot}
+                                </p>
+                              </div>
+                              <div className="text-gray-600 flex md:items-center items-start md:flex-row flex-col gap-5">
+                                <div className="flex md:flex-row gap-6 items-center">
+                                  <input
+                                    type="number"
+                                    value={slot.price}
+                                    onChange={(e) =>
+                                      handleModifyPrice(slot.id, e.target.value)
+                                    }
+                                    className="h-8 sm:h-10 md:h-12 border-primary border rounded-md p-2 font-medium"
+                                  />
+                                  <Button
+                                    onClick={() =>
+                                      handleModifyPrice(slot.id, slot.price)
+                                    }
+                                    variant={"outlinePrimary"}
+                                    label={
+                                      <>
+                                        <span className="whitespace-nowrap">
+                                          <span>Save</span>{" "}
+                                          <i className="fas fa-save"></i>
+                                        </span>
+                                      </>
+                                    }
+                                    customClass={"text-primary flex-1"}
+                                  />
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      ))}
-
+                          ))
+                        : null}
                     </div>
                   )}
                 </div>
               </div>
             </TabPanel>
+
             <TabPanel>
               <div className="Bookings pt-5">
                 <div className="flex items-center justify-between gap-3">
@@ -441,14 +449,12 @@ const Dashboard = () => {
                     onClick={handleSyncBookings}
                   />
                 </div>
-                {!bookings ? (
-                  <>
-                    <div className="w-full flex items-center text-center justify-center">
-                      <span className="text-2xl text-red-600 ">
-                        No bookings found
-                      </span>
-                    </div>
-                  </>
+                {!bookings || bookings.length === 0 ? (
+                  <div className="w-full flex items-center text-center justify-center">
+                    <span className="text-2xl text-red-600 ">
+                      No bookings found
+                    </span>
+                  </div>
                 ) : (
                   <VStack spacing={8} align="stretch" className="mt-10">
                     {bookings.map((booking) => (
