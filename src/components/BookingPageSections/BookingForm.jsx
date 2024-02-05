@@ -16,7 +16,7 @@ import { sendEmail } from "../Utils/Data";
 import image from "../../assets/logo.png"
 
 const BookingsForm = () => {
-  var prices = 0
+  var prices = 0;
   let payment_id;
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
