@@ -182,13 +182,12 @@ const Dashboard = () => {
   };
   const handleModifyBooking = async (id, newData) => {
     try {
-      // Reference to the booking document in Firestore
+   
       const bookingDocRef = doc(db, "bookings", id);
 
-      // Update the document with new data
       await updateDoc(bookingDocRef, newData);
 
-      // Update local state with modified data
+
       const updatedBookings = bookings.map((booking) => {
         if (booking.id === id) {
           return { ...booking, ...newData };
@@ -367,66 +366,59 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     <div className="flex flex-col mt-6 gap-4">
-                      {searchResults.length > 0 ? (
-                        searchResults.map((slot) => (
-                          <div
-                            key={slot.id}
-                            className="p-4 border rounded-lg flex md:flex-row flex-col md:items-center items-start md:justify-between "
-                          >
-                            <div className="flex flex-col gap-3">
-                              <span className="badge">
-                                {/* {slot.session === "morning" ? (
-                                    <Badge variant="subtle" colorScheme="green">
-                                        {slot.session}
-                                    </Badge>
-                                ) : slot.session === "afternoon" ? (
-                                    <Badge variant="subtle" colorScheme="orange">
-                                        {slot.session}
-                                    </Badge>
-                                ) : (
-                                    <Badge variant="subtle" colorScheme="purple">
-                                        {slot.session}
-                                    </Badge>
-                                )} */}
-                              </span>
-                              <p className="text-xl font-semibold">
-                                {slot.slot}
-                              </p>
-                            </div>
-                            <div className="text-gray-600 flex md:items-center items-start md:flex-row flex-col gap-5">
-                              <div className="flex md:flex-row gap-6 items-center">
-                                <input
-                                  type="number"
-                                  value={slot.price}
-                                  onChange={(e) =>
-                                    handleModifyPrice(slot.id, e.target.value)
-                                  }
-                                  className="h-8 sm:h-10 md:h-12 border-primary border rounded-md p-2 font-medium"
-                                />
-                                <Button
-                                  onClick={() =>
-                                    handleModifyPrice(slot.id, slot.price)
-                                  }
-                                  variant={"outlinePrimary"}
-                                  label={
-                                    <>
-                                      <span className="whitespace-nowrap">
-                                        <span>Save</span>{" "}
-                                        <i className="fas fa-save"></i>
-                                      </span>
-                                    </>
-                                  }
-                                  customClass={"text-primary flex-1"}
-                                />
-                              </div>
+                      {searchResults.map((slot) => (
+                        <div
+                          key={slot.id}
+                          className="p-4 border rounded-lg flex md:flex-row flex-col md:items-center items-start md:justify-between "
+                        >
+                          <div className="flex flex-col gap-3">
+                            <span className="badge">
+                              {slot.session === "morning" ? (
+                                <Badge variant="subtle" colorScheme="green">
+                                  {slot.session}
+                                </Badge>
+                              ) : slot.session === "afternoon" ? (
+                                <Badge variant="subtle" colorScheme="orange">
+                                  {slot.session}
+                                </Badge>
+                              ) : (
+                                <Badge variant="subtle" colorScheme="purple">
+                                  {slot.session}
+                                </Badge>
+                              )}
+                            </span>
+                            <p className="text-xl font-semibold">{slot.slot}</p>
+                          </div>
+                          <div className="text-gray-600 flex md:items-center items-start md:flex-row flex-col gap-5">
+                            <div className="flex md:flex-row gap-6 items-center">
+                              <input
+                                type="number"
+                                value={slot.price}
+                                onChange={(e) =>
+                                  handleModifyPrice(slot.id, e.target.value)
+                                }
+                                className="h-8 sm:h-10 md:h-12 border-primary border rounded-md p-2 font-medium"
+                              />
+                              <Button
+                                onClick={() =>
+                                  handleModifyPrice(slot.id, slot.price)
+                                }
+                                variant={"outlinePrimary"}
+                                label={
+                                  <>
+                                    <span className="whitespace-nowrap">
+                                      <span>Save</span>{" "}
+                                      <i className="fas fa-save"></i>
+                                    </span>
+                                  </>
+                                }
+                                customClass={"text-primary flex-1"}
+                              />
                             </div>
                           </div>
-                        ))
-                      ) : (
-                        <div className="w-full flex items-center text-center justify-center">
-                          <span className="text-2xl">No time slots found</span>
                         </div>
-                      )}
+                      ))}
+
                     </div>
                   )}
                 </div>
@@ -488,17 +480,25 @@ const Dashboard = () => {
                                 <span className="text-lg font-semibold text-primary">
                                   Time Slot :
                                 </span>
-                                {booking.timeSlots.map((slot, index) => {
-                                  return (
-                                    <Badge
-                                      key={index}
-                                      className="text-bodyTextDark mr-2 font-medium text-lg"
-                                      on
-                                    >
-                                      {slot}
-                                    </Badge>
-                                  );
-                                })}
+                                {(() => {
+                                  const badgeComponents = [];
+                                  for (
+                                    let i = 0;
+                                    i < booking.timeSlots.length;
+                                    i++
+                                  ) {
+                                    const slot = booking.timeSlots[i];
+                                    badgeComponents.push(
+                                      <Badge
+                                        key={i}
+                                        className="text-bodyTextDark mr-2 font-medium text-lg"
+                                      >
+                                        {slot}
+                                      </Badge>
+                                    );
+                                  }
+                                  return badgeComponents;
+                                })()}
                               </div>
                             </Box>
 

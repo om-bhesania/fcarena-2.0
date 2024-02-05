@@ -13,6 +13,7 @@ import Button from "../buttons/Button";
 import axios from "axios";
 import TimingsInfo from './../TimingsPageSection/TimingsInfo';
 import { sendEmail } from "../Utils/Data";
+import image from "../../assets/logo.png"
 
 const BookingsForm = () => {
   var prices = 0
@@ -22,9 +23,9 @@ const BookingsForm = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [hour, setHour] = useState()
   const [isLoading,setIsLoading] = useState(false);
-  // const [prices,setPrices] = useState(0);
   const { availableSlots, handleDateChange, selectedDate } =
     useManageBookings();
+    // console.log(availableSlots);
   const [timeSlot, setTimeSlot] = useState("");
   const [selectedSlots, setSelectedSlots] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -43,11 +44,9 @@ const BookingsForm = () => {
       const updatedSelectedSlots = [...prevSelectedSlots];
       const index = updatedSelectedSlots.indexOf(selectedSlot);
       if (index > -1) {
-        // Deselect the slot if already selected
         updatedSelectedSlots.splice(index, 1);
         setTotalPrice(totalPrice - price)
       } else {
-        // Select the slot if not already selected
         updatedSelectedSlots.push(selectedSlot);
         setTotalPrice(totalPrice + price);
       }
@@ -108,21 +107,21 @@ const BookingsForm = () => {
       const {
         data: { key },
       } = await axios.get("https://fcarena-final.vercel.app/api/getkey");
-
       const {
         data: { order },
       } = await axios.post("https://fcarena-final.vercel.app/api/checkout", {
         amount: totalPrice,
       });
 
-      //https://fcarena-final.vercel.app/api/checkou  t
+
 
       const options = {
         key,
         amount: totalPrice,
         currency: "INR",
         name: "FcArenaVadodara",
-        image: "../../assets/logo.png",
+
+        image: "https://firebasestorage.googleapis.com/v0/b/fcarena-new-28cf1.appspot.com/o/logo.png?alt=media&token=70edb7bb-0a58-408b-bbb4-603543680969",
         order_id: order.id,
         handler: async function (response) {
           const {
@@ -229,21 +228,7 @@ const BookingsForm = () => {
                   </span>
                 )}
               </div>
-              {/* <div>
-                <FormLabel className="text-xl text-primary font-bold">
-                  Hours to Play
-                </FormLabel>
-                <Select
-                  placeholder={`Select No of hours you want to play`}
-                  value={hour}
-                  onChange={(e) => { setHour(e.target.value) }}
-                >
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                </Select>
-              </div> */}
+             
               <div>
                 <FormLabel className="text-xl text-primary font-bold">
                   Date
@@ -268,12 +253,10 @@ const BookingsForm = () => {
                   onChange={(e) => {
                     const selectedSlot = e.target.value;
                     setTimeSlot(selectedSlot);
-                    
-                    // Find the slot object corresponding to the selected time
+            
                     const selectedSlotObject = availableSlots.find(
                       (slot) => slot.time === selectedSlot
                       );
-                      // If the slot object is found, update the price state
                       if (selectedSlotObject) {
                         prices = selectedSlotObject.price
                       }

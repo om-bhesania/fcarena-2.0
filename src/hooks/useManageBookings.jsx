@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, doc, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import { data } from 'autoprefixer';
 
 const useManageBookings = () => {
+    let flag = false;
     const [selectedDate, setSelectedDate] = useState('');
     const [availableSlots, setAvailableSlots] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const book_timeSlot =[];
 
     useEffect(() => {
         const fetchAvailableSlots = async () => {
@@ -15,33 +18,40 @@ const useManageBookings = () => {
             setLoading(true);
             try {
                 const timeSlotsCollection = collection(db, 'timeSlots');
+                const bookingCollection = collection(db, 'bookings');
                 const snapshot = await getDocs(timeSlotsCollection);
+                const book_snapShot = await getDocs(bookingCollection);
 
-                // Create an array to hold 24-hour time slots with 1-hour page slots
                 const slots = Array.from({ length: 24 }, (_, index) => {
-                    const hourStart = ((index + 1) % 12 || 12) + ' ' + (index >= 12 ? 'PM' : 'AM');
-                    const hourEnd = ((index + 2) % 12 || 12) + ' ' + ((index + 1) >= 12 ? 'PM' : 'AM');
+                    const hourStart = ((index + 1) % 12 || 12) + (index >= 11 && index <= 22 ? 'AM' : 'PM');
+                    const hourEnd = ((index + 2) % 12 || 12) + (index >= 10 && index <= 21 ? 'AM' : 'PM');
                     return {
                         time: hourStart + ' - ' + hourEnd,
+                        price: 0,
                     };
                 });
-
-                // Fill slotsData with the data from Firestore 
-                snapshot.forEach((doc) => {
-                  const slotTime = parseInt(doc.data().slot.split(":")[0]);
-                  const price = doc.data().price;
-
-                  // Find the index in slots array corresponding to the slotTime
-                  const index = slotTime % 12;
-                  const updatedSlots = [...slots];
-
-                  // Update the price for the specific slot in the array
-                  updatedSlots[index] = { ...updatedSlots[index], price };
-
-                  // Update availableSlots state
-                  setAvailableSlots(updatedSlots);
-                  setLoading(false);
+                snapshot.forEach(doc => {
+                    const slotTime = doc.data().slot;
+                    const slotIndex = slots.findIndex(slot => slot.time === slotTime);
+                    if (slotIndex !== -1) {
+                        slots[slotIndex].price = doc.data().price;
+                    }
                 });
+                book_snapShot.forEach((doc)=>{
+                    if (selectedDate === doc.data().date && !flag) {
+                        const bookedSlots = doc.data().timeSlots;
+                        const updateSlots = slots.filter(slot => !bookedSlots.includes(slot.time)); // Filter out booked slots
+                        setAvailableSlots(updateSlots);
+                        flag = true;
+                        return; 
+                    }
+                })
+
+                if(!flag){
+                    setAvailableSlots(slots);
+                }
+
+                setLoading(false);
 
             } catch (error) {
                 setError('Error fetching available slots');
