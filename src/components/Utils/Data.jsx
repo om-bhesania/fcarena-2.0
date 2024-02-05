@@ -1,9 +1,9 @@
 
 export const timeSlots = [
-    '12am - 1am', '1am - 2am', '2am - 3am', '3am - 4am', '4am - 5am', '5am - 6am',
-    '6am - 7am', '7am - 8am', '8am - 9am', '9am - 10am', '10am - 11am', '11am - 12pm',
-    '12pm - 1pm', '1pm - 2pm', '2pm - 3pm', '3pm - 4pm', '4pm - 5pm', '5pm - 6pm',
-    '6pm - 7pm', '7pm - 8pm', '8pm - 9pm', '9pm - 10pm', '10pm - 11pm', '11pm - 12am'
+    '12AM - 1AM', '1AM - 2AM', '2AM - 3AM', '3AM - 4AM', '4AM - 5AM', '5AM - 6AM',
+    '6AM - 7AM', '7AM - 8AM', '8AM - 9AM', '9AM - 10AM', '10AM - 11AM', '11AM - 12PM',
+    '12PM - 1PM', '1PM - 2PM', '2PM - 3PM', '3PM - 4PM', '4PM - 5PM', '5PM - 6PM',
+    '6PM - 7PM', '7PM - 8PM', '8PM - 9PM', '9PM - 10PM', '10PM - 11PM', '11PM - 12AM'
 ];
 
 export const MenuItems = ["Home", "About", "Timings", "ContactUs"];
@@ -11,20 +11,20 @@ export const FooterMenuItems = ["Home", "About", "Timings", "ContactUs", "Terms 
 export const info = [
     {
         index: 1,
-        infoTitle: "Elevate Your Game with FcArena's FIFA Approved Turf",
-        info: "Experience the pinnacle of sporting excellence with FcArena's FIFA Approved Turf. Crafted to exacting standards, our turf offers unparalleled performance, durability, and safety. Whether you're a professional athlete or an enthusiastic amateur, FcArena's FIFA Approved Turf guarantees an authentic playing experience, empowering you to push the boundaries of your game. Elevate your matches with a surface trusted by the world's leading football organizations. Choose quality. Choose precision. Choose FcArena's FIFA Approved Turf.",
+        infoTitle: "Elevate Your GAMe with FcArena's FIFA Approved Turf",
+        info: "Experience the pinnacle of sporting excellence with FcArena's FIFA Approved Turf. Crafted to exacting standards, our turf offers unparalleled performance, durability, and safety. Whether you're a professional athlete or an enthusiastic AMateur, FcArena's FIFA Approved Turf guarantees an authentic playing experience, empowering you to push the boundaries of your gAMe. Elevate your matches with a surface trusted by the world's leading football organizations. Choose quality. Choose precision. Choose FcArena's FIFA Approved Turf.",
         graphics: Images[0].infographics[0].img,
     },
     {
         index: 2,
-        infoTitle: "Experience Seamless Access Anytime, Anywhere at FcArena",
+        infoTitle: "Experience SeAMless Access Anytime, Anywhere at FcArena",
         info: "At FcArena, we redefine convenience with our 24x7 On service. Embrace the freedom to engage in your favorite activities whenever inspiration strikes. Whether it's a spontaneous workout session or a midnight match under the stars, FcArena's facilities are always ready to accommodate your passion. With 24x7 On, the boundaries of time dissolve, giving you the flexibility to pursue your interests around the clock. Seize the moment. Embrace the possibilities. Experience 24x7 On like never before, only at FcArena.",
         graphics: Images[0].infographics[1].img,
     },
     {
         index: 3,
         infoTitle: "The Height of Sporting Excellence FcArena",
-        info: "Discover the pinnacle of sporting excellence at FcArena's Tallest Turf in Vadodara. Our iconic venue boasts the city's tallest turf, offering unmatched performance and excitement for athletes and enthusiasts alike. From corporate events to thrilling sports competitions, our versatile space promises unforgettable experiences. Join us at FcArena and elevate your game on Vadodara's tallest turf. Unlock possibilities, ignite passions, and make lasting memories with us.",
+        info: "Discover the pinnacle of sporting excellence at FcArena's Tallest Turf in Vadodara. Our iconic venue boasts the city's tallest turf, offering unmatched performance and excitement for athletes and enthusiasts alike. From corporate events to thrilling sports competitions, our versatile space promises unforgettable experiences. Join us at FcArena and elevate your gAMe on Vadodara's tallest turf. Unlock possibilities, ignite passions, and make lasting memories with us.",
         graphics: Images[0].infographics[2].img
     },
 ];
@@ -40,13 +40,13 @@ export const categorizeTimeSlots = () => {
         const [startTime, endTime] = slot.split(' - ');
 
         let startHour = parseInt(startTime);
-        const startPeriod = startTime.includes('pm') ? 'pm' : 'am';
-        if (startPeriod === 'pm' && startHour !== 12) {
+        const startPeriod = startTime.includes('PM') ? 'PM' : 'AM';
+        if (startPeriod === 'PM' && startHour !== 12) {
             startHour += 12;
         }
         let endHour = parseInt(endTime);
-        const endPeriod = endTime.includes('pm') ? 'pm' : 'am';
-        if (endPeriod === 'pm' && endHour !== 12) {
+        const endPeriod = endTime.includes('PM') ? 'PM' : 'AM';
+        if (endPeriod === 'PM' && endHour !== 12) {
             endHour += 12;
         }
 
@@ -75,8 +75,6 @@ import { db } from '../../firebase/firebase';
 import Images from './images';
 import emailjs from 'emailjs-com';
 import { useEffect } from 'react';
-
-
 
 export const addDefaultPrice = async () => {
 
@@ -161,19 +159,19 @@ export const syncTimeSlotsFromFirestore = async () => {
 
 export const sendEmail = async (formData) => {
     try {
-        let emailParams;
+        let emailParAMs;
 
         if (formData.email) {
             // This is triggered from the contact form
-            emailParams = {
-                from_name: formData.name,
+            emailParAMs = {
+                from_nAMe: formData.nAMe,
                 from_email: formData.email,
                 message: formData.message,
             };
         } else {
             // This is triggered from the booking form
-            emailParams = {
-                from_name: formData.name,
+            emailParAMs = {
+                from_nAMe: formData.nAMe,
                 from_email: formData.contact,
                 booking_date: formData.date,
                 time_slot: formData.timeSlot,
@@ -183,7 +181,7 @@ export const sendEmail = async (formData) => {
         await emailjs.send(
             'service_4h4oi58',
             'template_44cxicl',
-            emailParams,
+            emailParAMs,
             'PguK8OQaPD5-Azj-Y'
         );
 
