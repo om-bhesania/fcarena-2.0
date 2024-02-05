@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
+import { data } from 'autoprefixer';
 
 const useManageBookings = () => {
     const [selectedDate, setSelectedDate] = useState('');
     const [availableSlots, setAvailableSlots] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const book_timeSlot =[];
 
     useEffect(() => {
         const fetchAvailableSlots = async () => {
@@ -15,7 +17,9 @@ const useManageBookings = () => {
             setLoading(true);
             try {
                 const timeSlotsCollection = collection(db, 'timeSlots');
+                const bookingCollection = collection(db, 'bookings')
                 const snapshot = await getDocs(timeSlotsCollection);
+                const book_snapShot = await getDocs(bookingCollection);
 
                 // Create an array to hold 24-hour time slots with 1-hour page slots
                 const slots = Array.from({ length: 24 }, (_, index) => {
@@ -26,13 +30,23 @@ const useManageBookings = () => {
                     };
                 });
 
-                // Fill slotsData with the data from Firestore 
-                snapshot.forEach((doc) => { 
-                    const slotTime = parseInt(doc.data().slot.split(':')[0]);
-                    const price = doc.data().price;
-                    slots.forEach(slot => slot.price = price );
-                });
-                setAvailableSlots(slots);
+                book_snapShot.forEach((doc)=>{
+                    const timeSlots = doc.data().timeSlots;
+                    timeSlots.forEach(slot => {
+                        book_timeSlot.push(slot);
+                    })
+                })
+
+                book_snapShot.forEach((doc)=>{
+                    if(selectedDate === doc.data().date){
+                        const updateSlots = slots.filter(slot => !book_timeSlot.includes(slot.time));
+                        setAvailableSlots(updateSlots)
+                    } else {
+                        setAvailableSlots(slots);
+                    }
+                })
+
+
                 setLoading(false);
             } catch (error) {
                 setError('Error fetching available slots');

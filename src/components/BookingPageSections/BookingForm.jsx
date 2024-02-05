@@ -108,7 +108,6 @@ const BookingsForm = () => {
       const {
         data: { key },
       } = await axios.get("https://fcarena-final.vercel.app/api/getkey");
-
       const {
         data: { order },
       } = await axios.post("https://fcarena-final.vercel.app/api/checkout", {
