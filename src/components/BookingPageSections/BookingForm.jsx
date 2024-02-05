@@ -139,65 +139,6 @@ const BookingsForm = () => {
             handlePaymentSuccess();
           } else {
             handlePaymentFailure();
-        }
-    }, [paymentSuccess]);
-
-
-    const handlePaymentSuccess = () => {
-        toast({
-            title: 'Booking Successful',
-            description: 'Your booking has been confirmed.',
-            status: 'success',
-            duration: 7000,
-            position: 'top',
-            isClosable: true,
-        })
-        handleBookingAndEmail()
-        setShowMessage(true)
-        setName('')
-        setContact('')
-        handleDateChange('')
-        setTimeSlot('')
-        setPrice('')
-    }
-
-    const handlePaymentFailure = () => {
-        setShowMessage(true)
-        toast({
-            title: 'Error',
-            description: 'Something went wrong. Please try again.',
-            status: 'error',
-            duration: 7000,
-            position: 'top',
-            isClosable: true,
-        })
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        if (
-            contact.length !== 10 ||
-            name.trim() === '' ||
-            selectedDate === '' ||
-            timeSlot === ''
-        ) {
-            setShowAlert(true)
-            return
-        }
-
-
-        const {
-          data: { key },
-        } = await axios.get(
-          "https://fcarenavadodara.in/api/getkey"
-        );
-
-        const {
-          data: { order },
-        } = await axios.post(
-          "https://fcarenavadodara.in/api/checkout",
-          {
-            amount: price,
           }
         },
         prefill: {
