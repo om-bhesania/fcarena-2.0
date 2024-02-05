@@ -486,32 +486,32 @@ const Dashboard = () => {
                                 <span className="text-lg font-semibold text-primary">
                                   Time Slot :
                                 </span>
-                                 {(() => 
-                                                                { const badgeComponents =[]
-                                                                    const timeSlot_arr = booking.timeSlots;
-                                                                    if(timeSlot_arr.length == 0){
-                                                                        toast({
-                                                                            title:"error",
-                                                                            description:"Error to fetch time slot"
-                                                                        })
-                                                                    }
-                                                                    for (let i = 0;i <timeSlot_arr.length;i++) {
-                                                                        const slot = timeSlot_arr[i]
-                                                                        badgeComponents.push(
-                                                                            <Badge
-                                                                                key={
-                                                                                    i
-                                                                                }
-                                                                                className="text-bodyTextDark mr-2 font-medium text-lg"
-                                                                            >
-                                                                                {
-                                                                                    slot
-                                                                                }
-                                                                            </Badge>
-                                                                        )
-                                                                    }
-                                                                    return badgeComponents
-                                                                })()}
+                                 {(() => {
+                                  const badgeComponents = [];
+                                  const timeSlot_arr = booking.timeSlots || []; // Ensure timeSlot_arr is an array
+                              
+                                  if (timeSlot_arr.length === 0) {
+                                      toast({
+                                          title: "Error",
+                                          description: "Error fetching time slot",
+                                          status: "error"
+                                      });
+                                  } else {
+                                      for (let i = 0; i < timeSlot_arr.length; i++) {
+                                          const slot = timeSlot_arr[i];
+                                          badgeComponents.push(
+                                              <Badge
+                                                  key={i}
+                                                  className="text-bodyTextDark mr-2 font-medium text-lg"
+                                              >
+                                                  {slot}
+                                              </Badge>
+                                          );
+                                      }
+                                  }
+                              
+                                  return badgeComponents;
+                              })()}
                               </div>
                             </Box>
 
