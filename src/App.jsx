@@ -21,6 +21,7 @@ function App() {
         families: ['Chromate Serif']
       }
     });      
+    addDefaultPrice();
   }, []);
 
 
