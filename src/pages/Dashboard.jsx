@@ -318,6 +318,7 @@ const Dashboard = () => {
                   <Button
                     role="link"
                     variant={"outlinePrimary"}
+                    customClass={'whitespace-nowrap'}
                     label={
                       <>
                         Sync <i className="fas fa-sync"></i>
