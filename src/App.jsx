@@ -20,8 +20,7 @@ function App() {
       google: {
         families: ['Chromate Serif']
       }
-    });
-    addDefaultPrice();      
+    });    
   }, []);
 
 
