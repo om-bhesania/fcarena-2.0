@@ -14,6 +14,7 @@ import axios from "axios";
 import TimingsInfo from './../TimingsPageSection/TimingsInfo';
 import { sendEmail } from "../Utils/Data";
 import image from "../../assets/logo.png"
+import { document } from "postcss";
 
 const BookingsForm = () => {
   var prices = 0;
@@ -181,11 +182,17 @@ const BookingsForm = () => {
     });
   };
 
+const openDateInput = () => {
+  const openDate = document.querySelector(".date-input");
+  const dateInput = document.getElementById("date");
+  openDate.onclick= () => {
+    dateInput.click();
+  };
+};
 
   return (
     <section className="bookings py-12 md:pt-[7%] pt-[31%]">
       <div className="container mx-auto">
-       
         <fieldset className="border-dashed border-primary border-2 px-12 py-5 pb-[50px] md:max-w-[50%] max-w-full mx-auto">
           <legend className="text-4xl pb-3 text-primary font-semibold">
             Book Turf Now
@@ -228,40 +235,47 @@ const BookingsForm = () => {
                   </span>
                 )}
               </div>
-             
+
               <div>
-                <FormLabel className="text-xl text-primary font-bold">
+                <FormLabel className="text-xl date-input text-primary font-bold">
                   Date
                 </FormLabel>
                 <Input
                   type="date"
+                  id="date"
                   className="border-2 p-2 rounded-lg w-full border-primary"
                   placeholder="Enter Phone Number"
                   value={selectedDate}
                   onChange={(e) => handleDateChange(e.target.value)}
+                  onClick={openDateInput}
                 />
               </div>
               <div>
                 <FormLabel className="text-xl text-primary font-bold">
-                  Time Slot <span className="text-bodyTextDark text-[13px]">
-                      *you can add multiple slots by clicking on them one by one
-                    </span>
+                  Time Slot{" "}
+                  <span className="text-bodyTextDark text-[13px]">
+                    *you can add multiple slots by clicking on them one by one
+                  </span>
                 </FormLabel>
                 <Select
-                  placeholder={`${!selectedDate ? "Please select a date First" : "Select from Available Slots"}`}
+                  placeholder={`${
+                    !selectedDate
+                      ? "Please select a date First"
+                      : "Select from Available Slots"
+                  }`}
                   value={timeSlot}
                   onChange={(e) => {
                     const selectedSlot = e.target.value;
                     setTimeSlot(selectedSlot);
-            
+
                     const selectedSlotObject = availableSlots.find(
                       (slot) => slot.time === selectedSlot
-                      );
-                      if (selectedSlotObject) {
-                        prices = selectedSlotObject.price
-                      }
-                      handleTimeSlotSelection(selectedSlot,prices);
-                    }}
+                    );
+                    if (selectedSlotObject) {
+                      prices = selectedSlotObject.price;
+                    }
+                    handleTimeSlotSelection(selectedSlot, prices);
+                  }}
                 >
                   {availableSlots.map((slot, index) => (
                     <option key={index} value={slot.time}>
@@ -274,18 +288,27 @@ const BookingsForm = () => {
               {selectedDate && selectedSlots.length > 0 && (
                 <div>
                   <FormLabel className="text-xl text-primary font-bold">
-                    Selected Time Slots 
+                    Selected Time Slots
                   </FormLabel>
                   <ul>
                     {selectedSlots.map((selectedSlot, index) => (
-                      <li key={index}>{selectedSlot}</li>
+                      <>
+                        <div className="flex items-center justify-between gap-4" onClick={
+                          ()=>{setSelectedSlots(
+                            selectedSlots.filter((s)=> s !== selectedSlot)
+
+                          )}
+                        }>
+                          <li key={index}>{selectedSlot}</li>
+                          <div className="cursor-pointer flex-shrink-0">
+                            <i className="fa-solid fa-xmark text-red-600 font-bold text-lg"></i>
+                          </div>
+                        </div>
+                      </>
                     ))}
                   </ul>
                 </div>
               )}
-
-
-
 
               <Button
                 role={"button"}
