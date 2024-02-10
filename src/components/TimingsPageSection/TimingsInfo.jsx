@@ -1,5 +1,5 @@
- 
- 
+
+
 import { categorizeTimeSlots } from '../Utils/Data';
 import Button from './../buttons/Button';
 import useFetchTimeSlots from './../../hooks/useFetchTimeSlots';
@@ -19,7 +19,7 @@ const TimingsInfo = () => {
 
   const getPrice = (timeSlot) => {
     const slot = timeSlotData.find(slot => slot.slot === timeSlot);
-    return slot ? `₹${slot.price}/hour` : 'Price not available';
+    return slot ? `₹${slot.price} - advance` : 'Price not available';
   };
 
   return (
@@ -30,6 +30,7 @@ const TimingsInfo = () => {
             <div className="flex flex-col items-center">
               <span className="text-5xl font-bold text-primary">Timings and Pricing</span>
               <span className="text-lg text-bodyTextDark font-medium pt-3">Explore our available timings and pricing options note these are advance charges for the turf</span>
+              <span className="text-lg text-primary font-bold mt-3 px-3 bg-yellow-300">These are advance slot booking prices.</span>
             </div>
 
             <div className="grid md:grid-cols-3 md:grid-rows-1 grid-rows-3 gap-12 mt-12">
@@ -41,7 +42,10 @@ const TimingsInfo = () => {
                     <div key={index} className="flex justify-between items-center gap p-3 hover:border-2">
                       <div className="flex items-center md:flex-row flex-col gap-8">
                         <span className="text-bodyTextDark font-medium text-lg">{item}</span>
-                      <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
+                        <div className="badge-container flex items-center justify-between">
+                          <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
+                          <sub className='line-through ps-2'>₹1200</sub>
+                        </div>
                       </div>
                       <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
                     </div>
@@ -57,7 +61,10 @@ const TimingsInfo = () => {
                     <div key={index} className="flex justify-between items-center gap p-3 hover:border-2">
                       <div className="flex items-center md:flex-row flex-col gap-8">
                         <span className="text-bodyTextDark font-medium text-lg">{item}</span>
-                      <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
+                        <div className="badge-container flex items-center justify-between">
+                          <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
+                          <sub className='line-through ps-2'>₹1200</sub>
+                        </div>
                       </div>
                       <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
                     </div>
@@ -73,7 +80,10 @@ const TimingsInfo = () => {
                     <div key={index} className="flex justify-between items-center md:flex-row flex-col md:gap-0 gap-5 border-b hover:border-2 p-3">
                       <div className="flex items-center md:flex-row flex-col gap-8">
                         <span className="text-bodyTextDark font-medium text-lg">{item}</span>
-                      <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
+                        <div className="badge-container flex items-center justify-between">
+                          <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
+                          <sub className='line-through ps-2'>₹1200</sub>
+                        </div>
                       </div>
                       <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
                     </div>
