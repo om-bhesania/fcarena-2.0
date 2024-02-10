@@ -94,7 +94,7 @@ const Dashboard = () => {
   const handleCancelBooking = async (id, payment_id, amount) => {
     try {
       const refund_receipt = await axios.post(
-        `https://fcarena-server-5hygg8ij1-om-bhesania.vercel.app/api/refund/${payment_id}`,
+        `https://fcarena-server-three.vercel.app/api/refund/${payment_id}`,
         {
           amount: amount,
         }
@@ -162,7 +162,7 @@ const Dashboard = () => {
       setTimeSlots(updatedTimeSlots);
       localStorage.setItem("timeSlots", JSON.stringify(updatedTimeSlots)); // Update data in local storage
       toast({
-        title: Successfully Updated,
+        title: `Successfully Updated`,
         status: "success",
         isClosable: true,
         position: "top-right",
@@ -172,7 +172,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error updating price:", error);
       toast({
-        title: Something Went Wrong,
+        title: `Something Went Wrong`,
         status: "error",
         isClosable: true,
         position: "top-right",
@@ -234,7 +234,7 @@ const Dashboard = () => {
         setTimeSlots(updatedTimeSlots);
         localStorage.setItem("timeSlots", JSON.stringify(updatedTimeSlots)); // Update data in local storage
         toast({
-          title: Successfully Updated,
+          title: `Successfully Updated`,
           status: "success",
           isClosable: true,
           position: "top-right",
@@ -243,7 +243,7 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error updating all prices:", error);
         toast({
-          title: Something Went Wrong,
+          title: `Something Went Wrong`,
           status: "error",
           isClosable: true,
           position: "top-right",
@@ -670,4 +670,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard;
