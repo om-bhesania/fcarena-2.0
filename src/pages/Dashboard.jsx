@@ -94,7 +94,7 @@ const Dashboard = () => {
   const handleCancelBooking = async (id, payment_id, amount) => {
     try {
       const refund_receipt = await axios.post(
-        https://fcarena-server-three.vercel.app/api/refund/${payment_id},
+        `https://fcarena-server-5hygg8ij1-om-bhesania.vercel.app/api/refund/${payment_id}`,
         {
           amount: amount,
         }
