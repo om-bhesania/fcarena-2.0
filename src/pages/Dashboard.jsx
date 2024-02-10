@@ -94,7 +94,7 @@ const Dashboard = () => {
   const handleCancelBooking = async (id, payment_id, amount) => {
     try {
       const refund_receipt = await axios.post(
-        `https://fcarena-final.vercel.app/api/refund/${payment_id}`,
+        https://fcarena-server-three.vercel.app/api/refund/${payment_id},
         {
           amount: amount,
         }
@@ -162,7 +162,7 @@ const Dashboard = () => {
       setTimeSlots(updatedTimeSlots);
       localStorage.setItem("timeSlots", JSON.stringify(updatedTimeSlots)); // Update data in local storage
       toast({
-        title: `Successfully Updated`,
+        title: Successfully Updated,
         status: "success",
         isClosable: true,
         position: "top-right",
@@ -172,7 +172,7 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error updating price:", error);
       toast({
-        title: `Something Went Wrong`,
+        title: Something Went Wrong,
         status: "error",
         isClosable: true,
         position: "top-right",
@@ -182,9 +182,11 @@ const Dashboard = () => {
   };
   const handleModifyBooking = async (id, newData) => {
     try {
+   
       const bookingDocRef = doc(db, "bookings", id);
 
       await updateDoc(bookingDocRef, newData);
+
 
       const updatedBookings = bookings.map((booking) => {
         if (booking.id === id) {
@@ -232,7 +234,7 @@ const Dashboard = () => {
         setTimeSlots(updatedTimeSlots);
         localStorage.setItem("timeSlots", JSON.stringify(updatedTimeSlots)); // Update data in local storage
         toast({
-          title: `Successfully Updated`,
+          title: Successfully Updated,
           status: "success",
           isClosable: true,
           position: "top-right",
@@ -241,7 +243,7 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Error updating all prices:", error);
         toast({
-          title: `Something Went Wrong`,
+          title: Something Went Wrong,
           status: "error",
           isClosable: true,
           position: "top-right",
@@ -318,13 +320,12 @@ const Dashboard = () => {
                   <Button
                     role="link"
                     variant={"outlinePrimary"}
-                    customClass={'whitespace-nowrap'}
                     label={
                       <>
                         Sync <i className="fas fa-sync"></i>
                       </>
                     }
-                    onClick={handleSyncTimeSlots}
+                    onClick={handleSyncTimeSlots} // Call sync function on button click
                   />
                 </div>
 
@@ -365,74 +366,64 @@ const Dashboard = () => {
                     </div>
                   ) : (
                     <div className="flex flex-col mt-6 gap-4">
-                      {timeSlots && timeSlots.length > 0
-                        ? timeSlots.map((slot) => (
-                            <div
-                              key={slot.id}
-                              className="p-4 border rounded-lg flex md:flex-row flex-col md:items-center items-start md:justify-between "
-                            >
-                              <div className="flex flex-col gap-3">
-                                <span className="badge">
-                                  {slot.session === "morning" ? (
-                                    <Badge variant="subtle" colorScheme="green">
-                                      {slot.session}
-                                    </Badge>
-                                  ) : slot.session === "afternoon" ? (
-                                    <Badge
-                                      variant="subtle"
-                                      colorScheme="orange"
-                                    >
-                                      {slot.session}
-                                    </Badge>
-                                  ) : (
-                                    <Badge
-                                      variant="subtle"
-                                      colorScheme="purple"
-                                    >
-                                      {slot.session}
-                                    </Badge>
-                                  )}
-                                </span>
-                                <p className="text-xl font-semibold">
-                                  {slot.slot}
-                                </p>
-                              </div>
-                              <div className="text-gray-600 flex md:items-center items-start md:flex-row flex-col gap-5">
-                                <div className="flex md:flex-row gap-6 items-center">
-                                  <input
-                                    type="number"
-                                    value={slot.price}
-                                    onChange={(e) =>
-                                      handleModifyPrice(slot.id, e.target.value)
-                                    }
-                                    className="h-8 sm:h-10 md:h-12 border-primary border rounded-md p-2 font-medium"
-                                  />
-                                  <Button
-                                    onClick={() =>
-                                      handleModifyPrice(slot.id, slot.price)
-                                    }
-                                    variant={"outlinePrimary"}
-                                    label={
-                                      <>
-                                        <span className="whitespace-nowrap">
-                                          <span>Save</span>{" "}
-                                          <i className="fas fa-save"></i>
-                                        </span>
-                                      </>
-                                    }
-                                    customClass={"text-primary flex-1"}
-                                  />
-                                </div>
-                              </div>
+                      {searchResults.map((slot) => (
+                        <div
+                          key={slot.id}
+                          className="p-4 border rounded-lg flex md:flex-row flex-col md:items-center items-start md:justify-between "
+                        >
+                          <div className="flex flex-col gap-3">
+                            <span className="badge">
+                              {slot.session === "morning" ? (
+                                <Badge variant="subtle" colorScheme="green">
+                                  {slot.session}
+                                </Badge>
+                              ) : slot.session === "afternoon" ? (
+                                <Badge variant="subtle" colorScheme="orange">
+                                  {slot.session}
+                                </Badge>
+                              ) : (
+                                <Badge variant="subtle" colorScheme="purple">
+                                  {slot.session}
+                                </Badge>
+                              )}
+                            </span>
+                            <p className="text-xl font-semibold">{slot.slot}</p>
+                          </div>
+                          <div className="text-gray-600 flex md:items-center items-start md:flex-row flex-col gap-5">
+                            <div className="flex md:flex-row gap-6 items-center">
+                              <input
+                                type="number"
+                                value={slot.price}
+                                onChange={(e) =>
+                                  handleModifyPrice(slot.id, e.target.value)
+                                }
+                                className="h-8 sm:h-10 md:h-12 border-primary border rounded-md p-2 font-medium"
+                              />
+                              <Button
+                                onClick={() =>
+                                  handleModifyPrice(slot.id, slot.price)
+                                }
+                                variant={"outlinePrimary"}
+                                label={
+                                  <>
+                                    <span className="whitespace-nowrap">
+                                      <span>Save</span>{" "}
+                                      <i className="fas fa-save"></i>
+                                    </span>
+                                  </>
+                                }
+                                customClass={"text-primary flex-1"}
+                              />
                             </div>
-                          ))
-                        : null}
+                          </div>
+                        </div>
+                      ))}
+
                     </div>
                   )}
                 </div>
               </div>
             </TabPanel>
-
             <TabPanel>
               <div className="Bookings pt-5">
                 <div className="flex items-center justify-between gap-3">
@@ -450,12 +441,14 @@ const Dashboard = () => {
                     onClick={handleSyncBookings}
                   />
                 </div>
-                {!bookings || bookings.length === 0 ? (
-                  <div className="w-full flex items-center text-center justify-center">
-                    <span className="text-2xl text-red-600 ">
-                      No bookings found
-                    </span>
-                  </div>
+                {!bookings ? (
+                  <>
+                    <div className="w-full flex items-center text-center justify-center">
+                      <span className="text-2xl text-red-600 ">
+                        No bookings found
+                      </span>
+                    </div>
+                  </>
                 ) : (
                   <VStack spacing={8} align="stretch" className="mt-10">
                     {bookings.map((booking) => (
@@ -489,15 +482,7 @@ const Dashboard = () => {
                                 </span>
                                  {(() => {
                                   const badgeComponents = [];
-                                  const timeSlot_arr = booking.timeSlots || []; // Ensure timeSlot_arr is an array
-                              
-                                  if (timeSlot_arr.length === 0) {
-                                      toast({
-                                          title: "Error",
-                                          description: "Error fetching time slot",
-                                          status: "error"
-                                      });
-                                  } else {
+                                  const timeSlot_arr = booking.timeSlots;
                                       for (let i = 0; i < timeSlot_arr.length; i++) {
                                           const slot = timeSlot_arr[i];
                                           badgeComponents.push(
@@ -509,9 +494,7 @@ const Dashboard = () => {
                                               </Badge>
                                           );
                                       }
-                                  }
-                              
-                                  return badgeComponents;
+                                   return badgeComponents;
                               })()}
                               </div>
                             </Box>
@@ -687,4 +670,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Dashboard;
