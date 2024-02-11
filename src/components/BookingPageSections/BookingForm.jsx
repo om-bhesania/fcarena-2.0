@@ -134,12 +134,11 @@ const BookingsForm = () => {
           }
         },
         prefill: {
-          name: name,
-          email: "gaurav.kumar@example.com",
+          name: name, 
           contact: contact,
         },
         notes: {
-          address: "Razorpay Corporate Office",
+          address: "",
         },
         theme: {
           color: "#004F2D",

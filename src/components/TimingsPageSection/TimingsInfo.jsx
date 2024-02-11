@@ -1,26 +1,85 @@
-
-
 import { categorizeTimeSlots } from '../Utils/Data';
 import Button from './../buttons/Button';
 import useFetchTimeSlots from './../../hooks/useFetchTimeSlots';
-import { Badge } from '@chakra-ui/react';
+import { Badge, CircularProgress, useToast, } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
+import Loading from '../Utils/loaders/Loading';
+import ErrorLoader from './ErrorLoader';
 
 const TimingsInfo = () => {
   const { morningSlots, afternoonSlots, nightSlots } = categorizeTimeSlots();
-  const { timeSlotData, loading, error } = useFetchTimeSlots();
+  const { timeSlotData, loading, error, fetchTimeSlots } = useFetchTimeSlots();
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [fetchCounter, setFetchCounter] = useState(0);
+  const toast = useToast();
 
-  if (loading) {
-    return <div>Loading...</div>;
+  useEffect(() => {
+    // Check if fetchCounter is present in localStorage
+    const storedFetchCounter = localStorage.getItem('fetchCounter');
+    const storedFetchCounterSession = sessionStorage.getItem('fetchCounter');
+    if (storedFetchCounter || storedFetchCounterSession) {
+      setFetchCounter(parseInt(storedFetchCounter) || parseInt(storedFetchCounterSession));
+    }
+
+    // Check if data exists in local storage
+    const cachedData = localStorage.getItem('timeSlotData');
+    const cachedTimeStamp = localStorage.getItem('timeSlotDataTimestamp');
+    const cacheValidDuration = 24 * 60 * 60 * 1000; // 24 hours
+    if (cachedData && cachedTimeStamp && Date.now() - cachedTimeStamp < cacheValidDuration) {
+      setDataLoaded(true);
+    } else {
+      setDataLoaded(false);
+    }
+  }, []);
+
+  const handleFetchData = () => {
+    if (fetchCounter < 7) {
+      // Fetch data from the database
+      fetchTimeSlots();
+      // Update fetchCounter and store it in localStorage and sessionStorage
+      const newFetchCounter = fetchCounter + 1;
+      setFetchCounter(newFetchCounter);
+      localStorage.setItem('fetchCounter', JSON.stringify(newFetchCounter));
+      sessionStorage.setItem('fetchCounter', JSON.stringify(newFetchCounter));
+      // Show success toast
+      toast({
+        title: "Prices Synced",
+        description: "You have successfully synced prices and timings",
+        status: "success",
+        duration: 7000,
+        position: "top",
+        isClosable: true,
+      });
+    } else {
+      // Show warning toast if fetchCounter reaches 7
+      toast({
+        title: "Warning",
+        description: "You have Reached the Daily limit of data Fetches please try again later",
+        status: "warning",
+        duration: 7000,
+        position: "top",
+        isClosable: true,
+      });
+    }
+  };
+
+  if (loading || !dataLoaded) {
+    return (
+      <Loading label={'Loading Timings...'} />
+    );
   }
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return (
+      <ErrorLoader error={error.message} />
+    );
   }
 
   const getPrice = (timeSlot) => {
     const slot = timeSlotData.find(slot => slot.slot === timeSlot);
     return slot ? `₹${slot.price} - advance` : 'Price not available';
   };
+
 
   return (
     <section className="timings-and-pricing">
@@ -32,6 +91,8 @@ const TimingsInfo = () => {
               <span className="text-lg text-bodyTextDark font-medium pt-3">Explore our available timings and pricing options note these are advance charges for the turf</span>
               <span className="text-lg text-primary font-bold mt-3 px-3 bg-yellow-300">These are advance slot booking prices.</span>
             </div>
+
+            <Button variant={'outlinePrimary'} role={'button'} label={`Refresh Prices (${fetchCounter}/7)`} customClass={'text-primary whitespace-nowrap p-2'} onClick={handleFetchData} disabled={fetchCounter >= 7} />
 
             <div className="grid md:grid-cols-3 md:grid-rows-1 grid-rows-3 gap-12 mt-12">
               {/* Morning Sessions */}

@@ -34,6 +34,7 @@ import {
 } from "@chakra-ui/react";
 import useManageBookings from "../hooks/useManageBookings";
 import axios from "axios";
+import Loading from "../components/Utils/loaders/Loading";
 
 const Dashboard = () => {
   const { availableSlots } = useManageBookings();
@@ -182,7 +183,7 @@ const Dashboard = () => {
   };
   const handleModifyBooking = async (id, newData) => {
     try {
-   
+
       const bookingDocRef = doc(db, "bookings", id);
 
       await updateDoc(bookingDocRef, newData);
@@ -428,7 +429,7 @@ const Dashboard = () => {
               <div className="Bookings pt-5">
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="text-2xl font-bold mb-4">
-                    Time Slots Manager
+                    Bookings
                   </h2>
                   <Button
                     role="link"
@@ -443,11 +444,7 @@ const Dashboard = () => {
                 </div>
                 {!bookings ? (
                   <>
-                    <div className="w-full flex items-center text-center justify-center">
-                      <span className="text-2xl text-red-600 ">
-                        No bookings found
-                      </span>
-                    </div>
+                    <Loading label={'No bookings found'} />
                   </>
                 ) : (
                   <VStack spacing={8} align="stretch" className="mt-10">
@@ -480,22 +477,22 @@ const Dashboard = () => {
                                 <span className="text-lg font-semibold text-primary">
                                   Time Slot :
                                 </span>
-                                 {(() => {
+                                {(() => {
                                   const badgeComponents = [];
                                   const timeSlot_arr = booking.timeSlots;
-                                      for (let i = 0; i < timeSlot_arr.length; i++) {
-                                          const slot = timeSlot_arr[i];
-                                          badgeComponents.push(
-                                              <Badge
-                                                  key={i}
-                                                  className="text-bodyTextDark mr-2 font-medium text-lg"
-                                              >
-                                                  {slot}
-                                              </Badge>
-                                          );
-                                      }
-                                   return badgeComponents;
-                              })()}
+                                  for (let i = 0; i < timeSlot_arr.length; i++) {
+                                    const slot = timeSlot_arr[i];
+                                    badgeComponents.push(
+                                      <Badge
+                                        key={i}
+                                        className="text-bodyTextDark mr-2 font-medium text-lg"
+                                      >
+                                        {slot}
+                                      </Badge>
+                                    );
+                                  }
+                                  return badgeComponents;
+                                })()}
                               </div>
                             </Box>
 
