@@ -14,6 +14,9 @@ import PrivateRoutes from "./components/Utils/PrivateRoutes";
 import ContactUs from './pages/ContactUs';
 import TimeSlotSelector from "./components/BookingPageSections/test";    
 import { addDefaultPrice, addDefaultPriceToFirestore } from "./components/Utils/Data";
+import TermsConditions from "./pages/T&C";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import CancellationRefund from "./pages/CancellationRefund";
 function App() {
   useEffect(() => {
     WebFont.load({
@@ -38,6 +41,9 @@ function App() {
           <Route path="/bookings" element={<Booking />} />
           <Route path="/timings" element={<Timings />} />
           <Route path="/contactUs" element={<ContactUs />} />
+          <Route path="/terms-&-conditions" element={<TermsConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/cancellation-&-refund" element={<CancellationRefund />} />
           <Route path="/login" element={<Login />} />
           <Route path="/test" element={<TimeSlotSelector/>} />
           <Route path="/dashboard" element={<PrivateRoutes component={Dashboard} />} />

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import Logo from './../Utils/Logo'; 
+import Logo from './../Utils/Logo';
 import { FooterMenuItems } from '../Utils/Data';
 
 const Footer = () => {
@@ -20,16 +20,16 @@ const Footer = () => {
                                 {FooterMenuItems.map((item, index) => (
                                     <Link
                                         key={index}
-                                        to={`/${item.toLowerCase()}`}
-                                        className={`px-3 md:px-4 py-2 ${location.pathname === `/${item.toLowerCase()}`
-                                            ? "text-primary" :
-                                            "text-white"
-                                            } capitalize font-semibold text-base md:text-lg`}
+                                        to={`/${item.toLowerCase().replace(
+                                            /\s/g,
+                                            '-'
+                                        )}`}
+                                        className={`px-3 md:px-4 py-2 ${location.pathname === `/${item.toLowerCase().replace(/\s/g,'-')}`} text-white capitalize font-semibold text-base md:text-lg`}
                                     >
                                         {item}
                                     </Link>
                                 ))}
-                            </div> 
+                            </div>
                         </div>
                     </div>
                 </div>

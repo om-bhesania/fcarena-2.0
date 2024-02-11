@@ -7,7 +7,7 @@ export const timeSlots = [
 ];
 
 export const MenuItems = ["Home", "About", "Timings", "ContactUs"];
-export const FooterMenuItems = ["Home", "About", "Timings", "ContactUs", "Terms & Conditions", "Privacy Policy",];
+export const FooterMenuItems = ["Home", "About", "Timings", "ContactUs", "Terms & Conditions", "Privacy Policy","Cancellation & Refund"];
 export const info = [
     {
         index: 1,
