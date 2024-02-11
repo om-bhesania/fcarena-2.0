@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Logo from './../Utils/Logo';
 import { FooterMenuItems } from '../Utils/Data';
+import Button from '../buttons/Button';
 
 const Footer = () => {
     return (
@@ -24,7 +25,7 @@ const Footer = () => {
                                             /\s/g,
                                             '-'
                                         )}`}
-                                        className={`px-3 md:px-4 py-2 ${location.pathname === `/${item.toLowerCase().replace(/\s/g,'-')}`} text-white capitalize font-semibold text-base md:text-lg`}
+                                        className={`px-3 md:px-4 py-2 ${location.pathname === `/${item.toLowerCase().replace(/\s/g, '-')}`} text-white capitalize font-semibold text-base md:text-lg`}
                                     >
                                         {item}
                                     </Link>
@@ -33,7 +34,15 @@ const Footer = () => {
                         </div>
                     </div>
                 </div>
-                <p className='text-white text-base text-center mt-4'>&copy; FcArenaVadodara. All rights reserved.</p>
+                <div className="flex flex-col md:flex-row items-center justify-center gap-6 text-center md:text-left">
+                    <p className='text-white text-base mb-2 md:mb-0'>&copy; FcArenaVadodara. All rights reserved. </p>
+                    <div className="flex md:space-x-4 mt-2 md:mt-0 flex-col md:flex-row">
+                        <Button label={'Terms & Conditions'} url={'/terms-&-conditions'} variant={'link'} customClass={'text-white underline text-sm whitespace-nowrap'} />
+                        <Button label={'Privacy Policy'} url={'/privacy-policy'} variant={'link'} customClass={'text-white underline text-sm whitespace-nowrap'} />
+                        <Button label={'Cancellation & Refund'} url={'/cancellation-&-refund'} variant={'link'} customClass={'text-white underline text-sm whitespace-nowrap'} />
+                    </div>
+                </div>
+
             </div>
         </footer>
     );
