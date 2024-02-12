@@ -1,7 +1,7 @@
 import { categorizeTimeSlots } from '../Utils/Data';
 import Button from './../buttons/Button';
 import useFetchTimeSlots from './../../hooks/useFetchTimeSlots';
-import { Badge, CircularProgress, useToast, } from '@chakra-ui/react';
+import { Badge,  useToast } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import Loading from '../Utils/loaders/Loading';
 import ErrorLoader from './ErrorLoader';
@@ -14,47 +14,47 @@ const TimingsInfo = () => {
   const toast = useToast();
 
   useEffect(() => {
-    // Check if fetchCounter is present in localStorage
-    const storedFetchCounter = localStorage.getItem('fetchCounter');
-    const storedFetchCounterSession = sessionStorage.getItem('fetchCounter');
-    if (storedFetchCounter || storedFetchCounterSession) {
-      setFetchCounter(parseInt(storedFetchCounter) || parseInt(storedFetchCounterSession));
-    }
-
     // Check if data exists in local storage
-    const cachedData = localStorage.getItem('timeSlotData');
-    const cachedTimeStamp = localStorage.getItem('timeSlotDataTimestamp');
+    const cachedData = localStorage.getItem("timeSlotsData");
+    const cachedTimeStamp = localStorage.getItem("timeSlotDataTimestamp");
     const cacheValidDuration = 24 * 60 * 60 * 1000; // 24 hours
-    if (cachedData && cachedTimeStamp && Date.now() - cachedTimeStamp < cacheValidDuration) {
+
+    if (
+      cachedData &&
+      cachedTimeStamp &&
+      Date.now() - parseInt(cachedTimeStamp) < cacheValidDuration
+    ) {
+      setFetchCounter(parseInt(localStorage.getItem("fetchCounter")) || 0);
       setDataLoaded(true);
     } else {
-      setDataLoaded(false);
+      // Fetch data from the database if not available or expired
+      fetchTimeSlots();
     }
   }, []);
+
+  useEffect(() => {
+    if (timeSlotData.length > 0) {
+      // Update fetchCounter and store it in localStorage
+      localStorage.setItem("timeSlotsData", JSON.stringify(timeSlotData));
+      localStorage.setItem("timeSlotDataTimestamp", Date.now());
+      setDataLoaded(true);
+    }
+  }, [timeSlotData]);
 
   const handleFetchData = () => {
     if (fetchCounter < 7) {
       // Fetch data from the database
       fetchTimeSlots();
-      // Update fetchCounter and store it in localStorage and sessionStorage
+      // Update fetchCounter and store it in localStorage
       const newFetchCounter = fetchCounter + 1;
       setFetchCounter(newFetchCounter);
-      localStorage.setItem('fetchCounter', JSON.stringify(newFetchCounter));
-      sessionStorage.setItem('fetchCounter', JSON.stringify(newFetchCounter));
-      // Show success toast
-      toast({
-        title: "Prices Synced",
-        description: "You have successfully synced prices and timings",
-        status: "success",
-        duration: 7000,
-        position: "top",
-        isClosable: true,
-      });
+      localStorage.setItem("fetchCounter", newFetchCounter);
     } else {
       // Show warning toast if fetchCounter reaches 7
       toast({
         title: "Warning",
-        description: "You have Reached the Daily limit of data Fetches please try again later",
+        description:
+          "You have Reached the Daily limit of data Fetches please try again later",
         status: "warning",
         duration: 7000,
         position: "top",
@@ -64,22 +64,16 @@ const TimingsInfo = () => {
   };
 
   if (loading || !dataLoaded) {
-    return (
-      <Loading label={'Loading Timings...'} />
-    );
+    return <Loading label={"Loading Timings..."} />;
   }
 
   if (error) {
-    return (
-      <ErrorLoader error={error.message} />
-    );
+    return <ErrorLoader error={error.message} />;
   }
-
   const getPrice = (timeSlot) => {
-    const slot = timeSlotData.find(slot => slot.slot === timeSlot);
-    return slot ? `₹${slot.price} - advance` : 'Price not available';
+    const slot = timeSlotData.find((slot) => slot.slot === timeSlot);
+    return slot ? `₹${slot.price} - advance` : "Price not available";
   };
-
 
   return (
     <section className="timings-and-pricing">
@@ -87,28 +81,56 @@ const TimingsInfo = () => {
         <div className="tnp-wrapper py-6 pt-[8%]">
           <div className="mx-auto">
             <div className="flex flex-col items-center">
-              <span className="text-5xl font-bold text-primary">Timings and Pricing</span>
-              <span className="text-lg text-bodyTextDark font-medium pt-3">Explore our available timings and pricing options note these are advance charges for the turf</span>
-              <span className="text-lg text-primary font-bold mt-3 px-3 bg-yellow-300">These are advance slot booking prices.</span>
+              <span className="text-5xl font-bold text-primary">
+                Timings and Pricing
+              </span>
+              <span className="text-lg text-bodyTextDark font-medium pt-3">
+                Explore our available timings and pricing options note these are
+                advance charges for the turf
+              </span>
+              <span className="text-lg text-primary font-bold mt-3 px-3 bg-yellow-300">
+                These are advance slot booking prices.
+              </span>
             </div>
-
-            <Button variant={'outlinePrimary'} role={'button'} label={`Refresh Prices (${fetchCounter}/7)`} customClass={'text-primary whitespace-nowrap p-2'} onClick={handleFetchData} disabled={fetchCounter >= 7} />
+            <Button
+              variant={"outlinePrimary"}
+              role={"button"}
+              label={`Refresh Prices (${fetchCounter}/7)`}
+              customClass={"text-primary whitespace-nowrap p-2"}
+              onClick={handleFetchData}
+              disabled={fetchCounter >= 7}
+            />
 
             <div className="grid md:grid-cols-3 md:grid-rows-1 grid-rows-3 gap-12 mt-12">
               {/* Morning Sessions */}
               <div className="bg-white p-6 rounded-md shadow-md flex flex-col">
-                <span className="text-3xl font-medium text-primary border-b pb-4 ">Morning Sessions</span>
+                <span className="text-3xl font-medium text-primary border-b pb-4 ">
+                  Morning Sessions
+                </span>
                 <div className="flex-1 pb-5 overflow-y-auto max-h-[590px]">
                   {morningSlots.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center gap p-3 hover:border-2">
+                    <div
+                      key={index}
+                      className="flex justify-between items-center gap p-3 hover:border-2"
+                    >
                       <div className="flex items-center md:flex-row flex-col gap-8">
-                        <span className="text-bodyTextDark font-medium text-lg">{item}</span>
+                        <span className="text-bodyTextDark font-medium text-lg">
+                          {item}
+                        </span>
                         <div className="badge-container flex items-center justify-between">
-                          <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
-                          <sub className='line-through ps-2'>₹1200</sub>
+                          <Badge className="text-gray-600 font-medium text-sm">
+                            {getPrice(item)}
+                          </Badge>
+                          <sub className="line-through ps-2">₹1200</sub>
                         </div>
                       </div>
-                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
+                      <Button
+                        variant={"outlinePrimary"}
+                        role={"link"}
+                        label={"Book Now"}
+                        customClass={"text-primary whitespace-nowrap p-2"}
+                        url={"/bookings"}
+                      />
                     </div>
                   ))}
                 </div>
@@ -116,18 +138,33 @@ const TimingsInfo = () => {
 
               {/* Afternoon Sessions */}
               <div className="bg-white p-6 rounded-md shadow-md flex flex-col">
-                <span className="text-3xl font-medium text-primary border-b pb-4">Afternoon Sessions</span>
+                <span className="text-3xl font-medium text-primary border-b pb-4">
+                  Afternoon Sessions
+                </span>
                 <div className="flex-1 pb-5 overflow-y-auto max-h-[590px]">
                   {afternoonSlots.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center gap p-3 hover:border-2">
+                    <div
+                      key={index}
+                      className="flex justify-between items-center gap p-3 hover:border-2"
+                    >
                       <div className="flex items-center md:flex-row flex-col gap-8">
-                        <span className="text-bodyTextDark font-medium text-lg">{item}</span>
+                        <span className="text-bodyTextDark font-medium text-lg">
+                          {item}
+                        </span>
                         <div className="badge-container flex items-center justify-between">
-                          <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
-                          <sub className='line-through ps-2'>₹1200</sub>
+                          <Badge className="text-gray-600 font-medium text-sm">
+                            {getPrice(item)}
+                          </Badge>
+                          <sub className="line-through ps-2">₹1200</sub>
                         </div>
                       </div>
-                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
+                      <Button
+                        variant={"outlinePrimary"}
+                        role={"link"}
+                        label={"Book Now"}
+                        customClass={"text-primary whitespace-nowrap p-2"}
+                        url={"/bookings"}
+                      />
                     </div>
                   ))}
                 </div>
@@ -135,18 +172,33 @@ const TimingsInfo = () => {
 
               {/* Evening and Night Sessions */}
               <div className="bg-white p-6 rounded-md shadow-md flex flex-col">
-                <span className="text-3xl font-medium text-primary border-b pb-4">Evening and Night Sessions</span>
+                <span className="text-3xl font-medium text-primary border-b pb-4">
+                  Evening and Night Sessions
+                </span>
                 <div className="flex-1 pb-5 overflow-y-auto max-h-[590px]">
                   {nightSlots.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center md:flex-row flex-col md:gap-0 gap-5 border-b hover:border-2 p-3">
+                    <div
+                      key={index}
+                      className="flex justify-between items-center  md:gap-0 gap-5 border-b hover:border-2 p-3"
+                    >
                       <div className="flex items-center md:flex-row flex-col gap-8">
-                        <span className="text-bodyTextDark font-medium text-lg">{item}</span>
+                        <span className="text-bodyTextDark font-medium text-lg">
+                          {item}
+                        </span>
                         <div className="badge-container flex items-center justify-between">
-                          <Badge className="text-gray-600 font-medium text-sm">{getPrice(item)}</Badge>
-                          <sub className='line-through ps-2'>₹1200</sub>
+                          <Badge className="text-gray-600 font-medium text-sm">
+                            {getPrice(item)}
+                          </Badge>
+                          <sub className="line-through ps-2">₹1200</sub>
                         </div>
                       </div>
-                      <Button variant={'outlinePrimary'} role={'link'} label={'Book Now'} customClass={'text-primary whitespace-nowrap p-2'} url={'/bookings'} />
+                      <Button
+                        variant={"outlinePrimary"}
+                        role={"link"}
+                        label={"Book Now"}
+                        customClass={"text-primary whitespace-nowrap p-2"}
+                        url={"/bookings"}
+                      />
                     </div>
                   ))}
                 </div>
