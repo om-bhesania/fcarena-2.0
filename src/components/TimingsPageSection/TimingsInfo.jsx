@@ -78,7 +78,7 @@ const TimingsInfo = () => {
   return (
     <section className="timings-and-pricing">
       <div className="container">
-        <div className="tnp-wrapper py-6 pt-[8%]">
+        <div className="tnp-wrapper py-6 pt-[20%] md:pt-[8%]">
           <div className="mx-auto">
             <div className="flex flex-col items-center">
               <span className="text-5xl font-bold text-primary">
