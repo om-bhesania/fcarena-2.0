@@ -97,11 +97,11 @@ const BookingsForm = () => {
         isClosable: true,
       })
       
-      const {key} = await axios.get("https://fcarena-server-5hygg8ij1-om-bhesania.vercel.app/api/getkey");
+      const {key} = await axios.get("https://fcarena-server-three.vercel.app/api/getkey");
 
       const {
         data: { order },
-      } = await axios.post("https://fcarena-server-5hygg8ij1-om-bhesania.vercel.app/api/checkout", {
+      } = await axios.post("https://fcarena-server-three.vercel.app/api/checkout", {
         amount: totalPrice,
       });
 
